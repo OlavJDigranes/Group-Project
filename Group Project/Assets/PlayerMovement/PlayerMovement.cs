@@ -5,8 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
-    const float movementSpeed = 5f;
-    const float jumpStrength = 5f;
+    //Base movement values
+    private const float movementSpeed = 3.25f;
+    private const float jumpStrength = 5f;
+
+    //Modifiers that will be used contextually
+    private float movementModifier = 1f;
+    private float jumpModifier = 1f;
+
+    //Facing right bool for sprite orientation
+    private bool isFacingRight = true;
 
     Rigidbody2D rb;
     // Start is called before the first frame update
@@ -21,23 +29,43 @@ public class PlayerMovement : MonoBehaviour
         handleMovementInputs(Time.deltaTime);
     }
 
+    //Function to handle movement inputs (keeps update method tidy)
     private void handleMovementInputs(float dt)
     {
         Vector2 moveVec = new Vector2(0, 0);
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow))   //Move right on screen
         {
-            //move right
             moveVec.x += movementSpeed;
+            isFacingRight = true;
         }
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow))    // Move left on screen
         {
             moveVec.x -= movementSpeed;
+            isFacingRight = false;
         }
-        rb.position += moveVec * dt;
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            rb.AddForce(new Vector2(0f, jumpStrength), ForceMode2D.Impulse);
-        }
+        rb.position += moveVec * dt * movementModifier;
 
+        if (Input.GetKeyDown(KeyCode.UpArrow))  // Jump
+        {
+            rb.AddForce(new Vector2(0f, jumpStrength * jumpModifier), ForceMode2D.Impulse);
+        }
+    }
+
+    float GetMovementModifier()
+    {
+        return movementModifier;
+    }
+    void SetMovementModifier(float multiplier)
+    {
+        movementModifier = multiplier;
+    }
+
+    float GetJumpModifier()
+    {
+        return jumpModifier;
+    }
+    void SetJumpModifier(float multiplier)
+    {
+        jumpModifier = multiplier;
     }
 }
