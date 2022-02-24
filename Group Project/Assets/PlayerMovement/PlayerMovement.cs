@@ -17,10 +17,12 @@ public class PlayerMovement : MonoBehaviour
     private bool isFacingRight = true;
 
     Rigidbody2D rb;
+    SpriteRenderer sr;
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
+        sr = gameObject.GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -37,11 +39,13 @@ public class PlayerMovement : MonoBehaviour
         {
             moveVec.x += movementSpeed;
             isFacingRight = true;
+            sr.flipX = false;
         }
         if (Input.GetKey(KeyCode.LeftArrow) || Input.GetAxis("DPAD_Horizontal") < 0)    // Move left on screen
         {
             moveVec.x -= movementSpeed;
             isFacingRight = false;
+            sr.flipX = true;
         }
         rb.position += moveVec * dt * movementModifier;
 
