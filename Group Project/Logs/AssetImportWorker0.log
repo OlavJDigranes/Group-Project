@@ -136,3 +136,4 @@ Received Import Request.
 Start importing Assets/Medieval_pixel_art_asset using Guid(6d74ea0393b7aa643aee4e3dc2f616ee) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '94b85ede151e380a109843287f605748') in 0.004017 seconds 
   Import took 0.006465 seconds .
 
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
