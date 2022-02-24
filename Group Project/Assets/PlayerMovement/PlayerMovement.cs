@@ -38,14 +38,20 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow) || Input.GetAxis("DPAD_Horizontal") > 0)   //Move right on screen
         {
             moveVec.x += movementSpeed;
-            isFacingRight = true;
-            sr.flipX = false;
+            if (isFacingRight != true)
+            {
+                isFacingRight = true;
+                sr.flipX = false; 
+            }
         }
         if (Input.GetKey(KeyCode.LeftArrow) || Input.GetAxis("DPAD_Horizontal") < 0)    // Move left on screen
         {
             moveVec.x -= movementSpeed;
-            isFacingRight = false;
-            sr.flipX = true;
+            if (isFacingRight != false)
+            {
+                isFacingRight = false;
+                sr.flipX = true; 
+            }
         }
         rb.position += moveVec * dt * movementModifier;
 
