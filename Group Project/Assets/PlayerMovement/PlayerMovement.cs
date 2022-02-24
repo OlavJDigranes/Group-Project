@@ -33,19 +33,19 @@ public class PlayerMovement : MonoBehaviour
     private void handleMovementInputs(float dt)
     {
         Vector2 moveVec = new Vector2(0, 0);
-        if (Input.GetKey(KeyCode.RightArrow))   //Move right on screen
+        if (Input.GetKey(KeyCode.RightArrow) || Input.GetAxis("DPAD_Horizontal") > 0)   //Move right on screen
         {
             moveVec.x += movementSpeed;
             isFacingRight = true;
         }
-        if (Input.GetKey(KeyCode.LeftArrow))    // Move left on screen
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetAxis("DPAD_Horizontal") < 0)    // Move left on screen
         {
             moveVec.x -= movementSpeed;
             isFacingRight = false;
         }
         rb.position += moveVec * dt * movementModifier;
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))  // Jump
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetButtonDown("Controller_Jump"))  // Jump
         {
             rb.AddForce(new Vector2(0f, jumpStrength * jumpModifier), ForceMode2D.Impulse);
         }
