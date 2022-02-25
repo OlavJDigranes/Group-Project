@@ -18,11 +18,23 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody2D rb;
     SpriteRenderer sr;
+    CapsuleCollider2D cc;
+
+    // Walk & Crouch vars to switch between walk and crouch sizings on capsule
+    Vector2 cc_size_Walk;
+    Vector2 cc_offset_Walk;
+    Vector2 cc_size_Crouch;
+    Vector2 cc_offset_Crouch;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
         sr = gameObject.GetComponent<SpriteRenderer>();
+        cc = gameObject.GetComponent<CapsuleCollider2D>();
+        cc_size_Walk = cc.size;
+        cc_size_Crouch = new Vector2(cc_size_Walk.x, cc_size_Walk.y - 0.5f);
+        cc_offset_Crouch = new Vector2(cc_offset_Walk.x, cc_offset_Walk.y - 0.25f);
     }
 
     // Update is called once per frame
@@ -58,6 +70,16 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetButtonDown("Controller_Jump"))  // Jump
         {
             rb.AddForce(new Vector2(0f, jumpStrength * jumpModifier), ForceMode2D.Impulse);
+        }
+        if (Input.GetKey(KeyCode.DownArrow)) // Crouch --- TODO: add controller axis
+        {
+            cc.size = cc_size_Crouch;
+            cc.offset = cc_offset_Crouch;
+        }
+        if (Input.GetKeyUp(KeyCode.DownArrow)) // Release crouch
+        {
+            cc.size = cc_size_Walk;
+            cc.offset = cc_offset_Walk;
         }
     }
 
