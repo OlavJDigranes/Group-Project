@@ -2,11 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TreeEditor;
 using UnityEngine;
 
 /// <summary>
 /// Common enemy script. Attach to common enemy prefabs.
 /// REQUIRED COMPONENTS FOR COMMON ENEMIES: Collider2D, RigidBody2D.
+/// --------------------
+/// Note: The player MUST have the tag "Player".
+/// Additionally, the player's weapon object must have the tag "PlayerAttack"
 /// </summary>
 public class CommonEnemy : MonoBehaviour
 {
@@ -26,6 +30,9 @@ public class CommonEnemy : MonoBehaviour
     // (Does a check approximately every 0.25 seconds instead of per frame).
     private float platformCheckTimer = 0.0f;
 
+    // Rigidbody component
+    private Rigidbody2D rb;
+
     /// <summary>
     /// Runs first and once on scene start.
     /// </summary>
@@ -35,6 +42,9 @@ public class CommonEnemy : MonoBehaviour
         // the total width and length of the collision box, while we only want to find the distance between the centre and edge (half).
         boundBox = GetComponent<BoxCollider2D>().bounds.size;
         boundBox.x *= 0.5f;
+
+        // Get rigidbody component
+        rb = GetComponent<Rigidbody2D>();
     }
 
     /// <summary>
@@ -61,6 +71,9 @@ public class CommonEnemy : MonoBehaviour
     /// <summary>
     /// Check if the monster moved off a platform (by using a short raycast from the edge of it's collision box), resolve if it is off it's platform.
     /// Runs on a timer so that it performs a raycast and collision check 4 times per second, instead of performing it every frame, improving efficiency.
+    /// <br></br><br></br>
+    /// Note: All floor tiles must have a 2D rigidbody and a 2D collider otherwise the enemy will fall through the floor or be unable to check for
+    /// collision with it's raycasts.
     /// </summary>
     private void CheckForPlatformEdge()
     {
@@ -88,14 +101,47 @@ public class CommonEnemy : MonoBehaviour
     /// <param name="other"> The Collision2D object, which can be used to retrieve the other gameObject that collided with the enemy.</param>
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Player")
+
+        // Handle collision with player's primary attack
+        if (other.gameObject.tag == "PlayerAttack")
         {
-            // Player.health -= contactDamage;
+            // Decrease health by it's damage value, 4 is a placeholder value.
+            health -= 4;
+            if (health <= 0)
+            {
+                // todo: Death effect (fade away, unique dying animation, fall into ground..?)
+                // Die if health is 0 or less.
+                Destroy(transform.gameObject);
+                // give player exp, increment global kill count, etc etc.
+            }
+            
+            // Enemy survived, but throw him back to give the attack more visual power.
+            // Throwing the enemy back requires finding the normal between the player/player attack and the enemy.
+            else
+            {
+                // Get collision normal to find force direction
+                Vector2 collisionNormal = (transform.position - other.transform.position).normalized;
 
-            // -- Call player function to check player's health to see if the inflicted damage is fatal.
+                // Add some height to the force to give it more impact.
+                collisionNormal.y = 0.3f;
 
-            // Apply a pushback effect (impulse) to the player to prevent multiple instant collisions, to signify that
-            // the player was damaged, etc: "PlayerRB2D.AddForce(new Vector2(-contactNormal * forceMultiplier), ForceMode.Impulse);"
+                // Add force, the collision normal multiplied by 5.
+                rb.AddForce(5 * collisionNormal, ForceMode2D.Impulse);
+
+                // Handle force in relation to monster movement: If the monster is pushed in the opposite direction of it's
+                // current movement direction, adapt to this hit and reverse movement direction.
+                if (collisionNormal.x > 0 && !facingRight)
+                {
+                    facingRight = true;
+                    boundBox.x *= -1.0f;
+
+                }
+                else if (collisionNormal.x < 0 && facingRight)
+                {
+                    facingRight = false;
+                    boundBox.x *= -1.0f;
+                }
+            }
         }
     }
 }
