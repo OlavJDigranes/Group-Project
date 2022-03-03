@@ -5,6 +5,14 @@ using System.Runtime.CompilerServices;
 using TreeEditor;
 using UnityEngine;
 
+// todo Checklist:
+// -> Animated sprites (Walking, Hurt, Dead) : Actual sprites unavailable for now, can be implemented once sprite is acquired.
+// -> Handling of other player attacks (Secondary, Ultimate) : Other attacks not implemented/designed yet, once developed come back to this.
+// -> After-death effects (Increment global kill count (if implemented), award player exp and gold)
+// -> Sounds (Walking, on player hit, on incoming damage, on death, possible idle chatter/noises) : Will be implemented as the sound files for them are developed.
+// -> (MoSCoW Could Have) Scaling health/damage stats (On player upgrade count, level..) 
+
+
 /// <summary>
 /// Common enemy script. Attach to common enemy prefabs.
 /// REQUIRED COMPONENTS FOR COMMON ENEMIES: Collider2D, RigidBody2D.
@@ -96,12 +104,11 @@ public class CommonEnemy : MonoBehaviour
 
     /// <summary>
     /// Called automatically when the enemy registers a collision with another object with a rigidbody2D component.
-    /// Because of how an enemy-player collision is detected, the player MUST use the "Player" tag.
+    /// <br></br> Because of how an enemy-player collision is detected, the player MUST use the "Player" tag.
     /// </summary>
     /// <param name="other"> The Collision2D object, which can be used to retrieve the other gameObject that collided with the enemy.</param>
     void OnCollisionEnter2D(Collision2D other)
     {
-
         // Handle collision with player's primary attack
         if (other.gameObject.tag == "PlayerAttack")
         {
