@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-Base path: 'G:/NapierWork/Unity/Editor/2020.3.28f1/Editor/Data', plugins path 'G:/NapierWork/Unity/Editor/2020.3.28f1/Editor/Data/PlaybackEngines'
+Base path: 'D:/Unity/Unity Hub/Editor/2020.3.28f1/Editor/Data', plugins path 'D:/Unity/Unity Hub/Editor/2020.3.28f1/Editor/Data/PlaybackEngines'
 Cmd: initializeCompiler
 
-Unhandled exception: Protocol error - failed to read magic number (error -2147483644, transferred 0/4)
-
-Quitting shader compiler process
-=======
-Base path: 'C:/Program Files/Unity/Hub/Editor/2020.3.28f1/Editor/Data', plugins path 'C:/Program Files/Unity/Hub/Editor/2020.3.28f1/Editor/Data/PlaybackEngines'
-Cmd: initializeCompiler
-
->>>>>>> origin/dev_Kamil
