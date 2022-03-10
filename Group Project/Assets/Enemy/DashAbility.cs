@@ -5,25 +5,33 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
-public class DashAbility : MonoBehaviour
+/// <summary>
+/// Derived ability "Dash", which denotes an attack where the enemy rapidly moves left or right in an attempt to run into the player.
+/// </summary>
+public sealed class DashAbility : Ability
 {
-    protected new string name;
-    protected int damage;
-    public float cooldown;
-    protected bool projectile;
+    // Constant that's used to determines the final speed of the dash.
     private int dashForceMultiplier;
 
+    /// <summary>
+    /// Constructor that automatically sets the damage, cooldown and dash speed.
+    /// </summary>
     public DashAbility()
     {
-        name = "Dash";
         damage = 6;
         cooldown = 5.0f;
-        projectile = false;
         dashForceMultiplier = 50;
     }
 
-    public void dashAttack(GameObject EliteEnemy, bool facingRight)
+    /// <summary>
+    /// Makes the enemy use a dash attack.
+    /// </summary>
+    /// <param name="EliteEnemy">The enemy game object.</param>
+    /// <param name="facingRight">Boolean that indicates whether the enemy is facing left or right.</param>
+    public override void UseAbility(GameObject EliteEnemy, bool facingRight)
     {
+        // If the ability is off-cooldown (cooldown is negative), generate a vector 2 that only uses the x component (positive for facing right, negative
+        // for facing left) multiplied by the dash force multiplier. Then apply the vector as an impulse force to the elite enemy and reset the cooldown.
         if (cooldown < 0.0f)
         {
             Vector2 dashImpulse = ((facingRight) ? Vector2.right : Vector2.left) * dashForceMultiplier;
