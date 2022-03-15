@@ -33,9 +33,21 @@ public class DestructibleWall : MonoBehaviour
     }
     void Attacked()
     {
-        --hp;
-        color.a -= (1/hp);
-        sr.color = color;
-        Debug.Log(hp);
+        if (hp > 0)
+        {
+            --hp;
+            color.a -= (1 / hp);
+            sr.color = color;
+            Debug.Log(hp);
+
+        }
+        else
+        {
+            bc.enabled = false;
+            Destroy(rb);
+            Destroy(sr);
+            Destroy(bc);
+            Destroy(this);
+        }
     }
 }
