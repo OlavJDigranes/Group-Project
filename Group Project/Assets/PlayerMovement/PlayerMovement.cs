@@ -18,6 +18,9 @@ public class PlayerMovement : MonoBehaviour
     //Facing right bool for sprite orientation
     private bool isFacingRight = true;
 
+    //Bool to indicate player has jumped
+    private bool hasJumped = false;
+
     //Necessary Components on GameObject
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -78,9 +81,10 @@ public class PlayerMovement : MonoBehaviour
     //Delegated jump event
     private void handleJump(InputAction.CallbackContext obj)
     {
-        if (!obj.canceled) //only if pressed past threshold
+        if (!obj.canceled && !hasJumped) //only if pressed past threshold
         {
             rb.AddForce(new Vector2(0f, jumpStrength * jumpModifier), ForceMode2D.Impulse);
+            hasJumped = true;
         }
     }
 
@@ -145,5 +149,17 @@ public class PlayerMovement : MonoBehaviour
     void SetJumpModifier(float multiplier)
     {
         jumpModifier = multiplier;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            //Debug.DrawLine(rb.position, contact.point, Color.green, 2f, true);
+            if (Vector2.Angle(Vector2.down, -contact.normal) <= 45)
+            {
+                hasJumped = false;
+            }
+        }
     }
 }
