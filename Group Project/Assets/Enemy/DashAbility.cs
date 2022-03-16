@@ -21,6 +21,9 @@ public sealed class DashAbility : Ability
         damage = 6;
         cooldown = 5.0f;
         dashForceMultiplier = 50;
+
+        // Negative duration = ignore this property, the ability has no duration.
+        duration = -1.0f;
     }
 
     /// <summary>
