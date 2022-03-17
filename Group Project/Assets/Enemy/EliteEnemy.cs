@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
@@ -35,6 +37,13 @@ public class EliteEnemy : MonoBehaviour
     // Boolean that determines if the ability relies on a timer to function, used to, for example remove new hitboxes or to finish an attack.
     private bool timedAbilty = false;
 
+    // Hitbox of the bash ability, set to null initially for cases where the enemy has a different ability, otherwise it will be set to the component.
+    private BoxCollider2D bashHitBox = null;
+
+    // Boolean that determines if an ability hit the player, used for certain abilities to ensure that it only interacts with the player
+    // once per ability usage (to prevent multiple hits at once).
+    private bool abilityHitPlayer = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -54,7 +63,8 @@ public class EliteEnemy : MonoBehaviour
 
                     // Melee defensive enemy
                     case 1:
-                        EliteAbility = gameObject.AddComponent<ShieldBashAbility>();
+                        EliteAbility = gameObject.AddComponent<BashAbility>();
+                        bashHitBox = gameObject.AddComponent<BoxCollider2D>();
                         timedAbilty = true;
                         EliteAbility.duration = 999.0f;
                         break;
@@ -105,12 +115,35 @@ public class EliteEnemy : MonoBehaviour
             if (EliteAbility.duration <= 0.0f)
             {
                 EliteAbility.StopAbility(gameObject);
+                abilityHitPlayer = false;
             }
         }
     }
 
-    //todo: collision with shield bash (dynamic method of differentiating between elite enemy hitbox and shield bash hitbox).
+    /// <summary>
+    /// Handle all collisions, called when two colliders touch.
+    /// </summary>
+    /// <param name="col"> The --Other-- collider that touched the collider on this object.</param>
     public void OnCollisionEnter2D(Collision2D col)
     {
+        // col: other object
+        // col.otherCollider: this object
+
+        // Shield bash hits player
+        if ((col.gameObject.tag == "Player" && col.otherCollider.Equals(bashHitBox)) && !abilityHitPlayer)
+        {
+            // Get the normalized hit direction and set the y value manually to add height and impact to this hit.
+            Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
+            normalizedHitDirection.y = 0.50f;
+
+            // Push the player back by this normalized hit direction as an impulse force.
+            // ANOMALY: Huge horizontal force is also added when the player is directly next to the enemy as he uses this ability. Likely
+            // due to collision wackiness from the player being directly inside the ability hitbox. Might fix but is overall low priority
+            // due to player being very unlikely to be that close to the enemy (When the ability is used) in actual gameplay.
+            col.gameObject.GetComponent<Rigidbody2D>().AddForce(4 * normalizedHitDirection, ForceMode2D.Impulse);
+
+            // Bool that checks if the ability hit is set to true, meaning that the bash will not push the player for the remainder of it's duration.
+            abilityHitPlayer = true;
+        }
     }
 }
