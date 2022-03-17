@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
     //Base movement values
+    private Vector2 cur_Movement;
     private const float movementSpeed = 3.25f;
     private const float jumpStrength = 5f;
 
@@ -16,67 +18,115 @@ public class PlayerMovement : MonoBehaviour
     //Facing right bool for sprite orientation
     private bool isFacingRight = true;
 
-    Rigidbody2D rb;
-    SpriteRenderer sr;
-    CapsuleCollider2D cc;
+    //Bool to indicate player has jumped
+    private bool hasJumped = false;
+
+    //Necessary Components on GameObject
+    private Rigidbody2D rb;
+    private SpriteRenderer sr;
+    private CapsuleCollider2D cc;
+    private PlayerInput playerInput;
+
+    //Stored player actions for easier access
+    private InputAction walkAction;
+    private InputAction jumpAction;
+    private InputAction crouchAction;
 
     // Walk & Crouch vars to switch between walk and crouch sizings on capsule
-    Vector2 cc_size_Walk;
-    Vector2 cc_offset_Walk;
-    Vector2 cc_size_Crouch;
-    Vector2 cc_offset_Crouch;
+    private Vector2 cc_size_Walk;
+    private Vector2 cc_offset_Walk;
+    private Vector2 cc_size_Crouch;
+    private Vector2 cc_offset_Crouch;
 
-    // Start is called before the first frame update
-    void Start()
+    //Process components needed for functions
+    private void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
         sr = gameObject.GetComponent<SpriteRenderer>();
         cc = gameObject.GetComponent<CapsuleCollider2D>();
+        playerInput = gameObject.GetComponent<PlayerInput>();
+        playerInput.currentActionMap.Enable();
         cc_size_Walk = cc.size;
+        cc_offset_Walk = cc.offset;
         cc_size_Crouch = new Vector2(cc_size_Walk.x, cc_size_Walk.y - 0.5f);
         cc_offset_Crouch = new Vector2(cc_offset_Walk.x, cc_offset_Walk.y - 0.25f);
+    }
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        walkAction = playerInput.actions["Walk"];
+        jumpAction = playerInput.actions["Jump"];
+        crouchAction = playerInput.actions["Crouch"];
+
+        walkAction.performed += handleWalk;
+        walkAction.canceled += handleWalk;
+        jumpAction.performed += handleJump;
+        //jumpAction.canceled += handleJump; --- Might need this later? Hold to climb on contextual surfaces or something (Rory)
+        crouchAction.performed += handleCrouch;
+        crouchAction.canceled += handleCrouch;
     }
 
     // Update is called once per frame
     void Update()
     {
-        handleMovementInputs(Time.deltaTime);
+        //if movement vector has been updated, move character
+        if (cur_Movement.magnitude > 0)
+        {
+            rb.position += cur_Movement * Time.deltaTime * movementModifier;
+        }
     }
 
-    //Function to handle movement inputs (keeps update method tidy)
-    private void handleMovementInputs(float dt)
+    //Delegated jump event
+    private void handleJump(InputAction.CallbackContext obj)
     {
-        Vector2 moveVec = new Vector2(0, 0);
-        if (Input.GetKey(KeyCode.RightArrow) || Input.GetAxis("DPAD_Horizontal") > 0)   //Move right on screen
-        {
-            moveVec.x += movementSpeed;
-            if (isFacingRight != true)
-            {
-                isFacingRight = true;
-                sr.flipX = false; 
-            }
-        }
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetAxis("DPAD_Horizontal") < 0)    // Move left on screen
-        {
-            moveVec.x -= movementSpeed;
-            if (isFacingRight != false)
-            {
-                isFacingRight = false;
-                sr.flipX = true; 
-            }
-        }
-        rb.position += moveVec * dt * movementModifier;
-
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetButtonDown("Controller_Jump"))  // Jump
+        if (!obj.canceled && !hasJumped) //only if pressed past threshold
         {
             rb.AddForce(new Vector2(0f, jumpStrength * jumpModifier), ForceMode2D.Impulse);
+            hasJumped = true;
         }
-        if (Input.GetKey(KeyCode.DownArrow)) // Crouch --- TODO: add controller axis
+    }
+
+    //Delegated walk event
+    private void handleWalk(InputAction.CallbackContext obj)
+    {
+        if (!obj.canceled) //only if pressed past threshold
+        {
+            if (walkAction.ReadValue<float>() > 0) //if axis positive
+            {
+                cur_Movement.x += movementSpeed;
+                if (isFacingRight != true)
+                {
+                    isFacingRight = true;
+                    sr.flipX = false;
+                }
+            }
+            else //if axis negative
+            {
+                cur_Movement.x -= movementSpeed;
+                if (isFacingRight != false)
+                {
+                    isFacingRight = false;
+                    sr.flipX = true;
+                }
+            }
+        }
+        else //else if axis neutral
+        {
+            cur_Movement.x = 0;
+        }
+    }
+
+    //Delegated Crouch event
+    private void handleCrouch(InputAction.CallbackContext obj)
+    {
+        if (!obj.canceled) //only if pressed past threshold
         {
             cc.size = cc_size_Crouch;
             cc.offset = cc_offset_Crouch;
         }
-        if (Input.GetKeyUp(KeyCode.DownArrow)) // Release crouch
+        else
         {
             cc.size = cc_size_Walk;
             cc.offset = cc_offset_Walk;
@@ -99,5 +149,17 @@ public class PlayerMovement : MonoBehaviour
     void SetJumpModifier(float multiplier)
     {
         jumpModifier = multiplier;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            //Debug.DrawLine(rb.position, contact.point, Color.green, 2f, true);
+            if (Vector2.Angle(Vector2.down, -contact.normal) <= 45)
+            {
+                hasJumped = false;
+            }
+        }
     }
 }
