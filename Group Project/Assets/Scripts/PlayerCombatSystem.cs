@@ -21,9 +21,9 @@ public class PlayerCombatSystem : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
 
-        primaryAttack = playerInput.actions["Primary Attack"];
-        secondaryAttack = playerInput.actions["Secondary Attack"];
-        ultimateAttack = playerInput.actions["Ultimate Attack"];
+        primaryAttack = playerInput.actions["Attack P"];
+        secondaryAttack = playerInput.actions["Attack S"];
+        ultimateAttack = playerInput.actions["Attack U"];
 
         primaryAttack.performed += PrimaryCast;
         secondaryAttack.performed += SecondaryCast;
