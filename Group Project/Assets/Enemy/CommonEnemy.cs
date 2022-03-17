@@ -110,10 +110,10 @@ public class CommonEnemy : MonoBehaviour
     void OnCollisionEnter2D(Collision2D other)
     {
         // Handle collision with player's primary attack
-        if (other.gameObject.tag == "PlayerAttack")
+        if (other.gameObject.tag == "Primary_Attack")
         {
             // Decrease health by it's damage value, 4 is a placeholder value.
-            health -= 4;
+            //health -= 4;
             if (health <= 0)
             {
                 // todo: Death effect (fade away, unique dying animation, fall into ground..?)
@@ -128,12 +128,11 @@ public class CommonEnemy : MonoBehaviour
             {
                 // Get collision normal to find force direction
                 Vector2 collisionNormal = (transform.position - other.transform.position).normalized;
-
                 // Add some height to the force to give it more impact.
-                collisionNormal.y = 0.3f;
+                collisionNormal.y = 0.5f;
 
                 // Add force, the collision normal multiplied by 5.
-                rb.AddForce(5 * collisionNormal, ForceMode2D.Impulse);
+                rb.AddForce(4 * collisionNormal, ForceMode2D.Impulse);
 
                 // Handle force in relation to monster movement: If the monster is pushed in the opposite direction of it's
                 // current movement direction, adapt to this hit and reverse movement direction.
