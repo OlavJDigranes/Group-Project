@@ -22,11 +22,18 @@ using UnityEngine;
 /// </summary>
 public class CommonEnemy : MonoBehaviour
 {
-    // Customizable monster health, movement speed multiplier and contact damage values.
+    // Monster level, used to scale the monster's damage and health.
     [SerializeField]
-    public int health;
-    public float moveSpeed;
-    public int contactDamage;
+    private int monsterLevel;
+
+    // Monster drops
+    private int expOnDeath;
+    private int goldOnDeath;
+
+    // Generic monster stats: damage health and movement speed.
+    private int contactDamage;
+    private int health;
+    private int moveSpeed;
 
     // Bool that determines what way the monster is facing, managed by the monster.
     private bool facingRight = false;
@@ -41,6 +48,7 @@ public class CommonEnemy : MonoBehaviour
     // Rigidbody component
     private Rigidbody2D rb;
 
+
     /// <summary>
     /// Runs first and once on scene start.
     /// </summary>
@@ -53,6 +61,16 @@ public class CommonEnemy : MonoBehaviour
 
         // Get rigidbody component
         rb = GetComponent<Rigidbody2D>();
+
+        // Setup monster movement speed and drops.
+        // Monster level might be determined later based on current level/player level? Hardcoded stats is also an option depending on game length.
+        contactDamage = monsterLevel * 5;
+        health = monsterLevel * 10;
+
+        expOnDeath = monsterLevel * 50;
+        goldOnDeath = monsterLevel * 10;
+
+        moveSpeed = 5;
     }
 
     /// <summary>
@@ -110,18 +128,52 @@ public class CommonEnemy : MonoBehaviour
     void OnCollisionEnter2D(Collision2D other)
     {
         // Handle collision with player's primary attack
-        if (other.gameObject.tag == "Primary_Attack")
+        if (other.gameObject.tag == "Primary_Attack" || other.gameObject.tag == "Secondary_Attack" || other.gameObject.tag == "Ultimate_Attack")
         {
-            // Decrease health by it's damage value, 4 is a placeholder value.
-            //health -= 4;
+            // Generate incoming damage value, generated from the player's attack value per attack, and the impulse multiplier of the force of the
+            // attack (Stronger attack = greater impulse, more visual power in the strike).
+            int incomingDamage;
+            Vector2 attackImpulseMultiplier = new Vector2(1.25f, 1.25f);
+
+            // Some accessor or getter needed per player attack to determine the incoming damage.
+            // Primary attack - 100% hit force multiplier
+            if (other.gameObject.tag == "Primary_Attack")
+            {
+                /*incomingDamage = Player.Get_Primary_Attack_Damage(); */
+            }
+
+            // Secondary attack - 133% hit force multiplier
+            else if (other.gameObject.tag == "Secondary_Attack")
+            {
+                /*incomingDamage = Player.Get_Secondary_Attack_Damage(); */
+                attackImpulseMultiplier *= 1.33f;
+            }
+
+            // Ultimate attack - 166% hit force multiplier: Might be a one-shot attack, leaving this anyway until player attack design is solidified.
+            else if (other.gameObject.tag == "Ultimate_Attack")
+            {
+                /*incomingDamage = Player.Get_Ultimate_Attack_Damage();*/
+                attackImpulseMultiplier *= 1.66f;
+            }
+        
+
+            // With damage value found, decrease health by the damage value, check if this is a fatal attack.
+            //health -= incomingDamage;
             if (health <= 0)
             {
-                // todo: Death effect (fade away, unique dying animation, fall into ground..?)
-                // Die if health is 0 or less.
+                // Die if health is 0 or less. Perhaps also a death animation if time permits?
                 Destroy(transform.gameObject);
-                // give player exp, increment global kill count, etc etc.
+
+                // give player exp and gold, etc etc. No player accessor functions yet so these are approximate implementations
+                // for later use in actual implementation:
+                /*
+                 * Player.exp += expOnDeath;
+                 * Player.CheckForLevelUp(); <-- Dynamically check if the player can level up (Reached exp requirement) every time exp is awarded.
+                 * Player.gold += goldOnDeath;
+                 */
             }
             
+
             // Enemy survived, but throw him back to give the attack more visual power.
             // Throwing the enemy back requires finding the normal between the player/player attack and the enemy.
             else
@@ -131,8 +183,8 @@ public class CommonEnemy : MonoBehaviour
                 // Add some height to the force to give it more impact.
                 collisionNormal.y = 0.5f;
 
-                // Add force, the collision normal multiplied by 5.
-                rb.AddForce(4 * collisionNormal, ForceMode2D.Impulse);
+                // Add force, the collision normal multiplied by the impulse of the player attack.
+                rb.AddForce(4 * collisionNormal * attackImpulseMultiplier, ForceMode2D.Impulse);
 
                 // Handle force in relation to monster movement: If the monster is pushed in the opposite direction of it's
                 // current movement direction, adapt to this hit and reverse movement direction.
@@ -147,6 +199,28 @@ public class CommonEnemy : MonoBehaviour
                     facingRight = false;
                     boundBox.x *= -1.0f;
                 }
+            }
+        }
+
+        // Collision with the player himself
+        // Either the enemy could call a Player.Hurt(contactDamage); function or the player handles this entirely on their end.
+        // Current implementation of monster-side collision with player is nudging the monster away in the other direction
+        // so that it doesn't hit the player multiple times and kills him instantly.
+        else if (other.gameObject.tag == "Player")
+        {
+            // Essentially same collision resolution method as colliding with a player attack, except without being pushed back.
+            Vector2 collisionNormal = (transform.position - other.transform.position).normalized;
+
+            if (collisionNormal.x > 0 && !facingRight)
+            {
+                facingRight = true;
+                boundBox.x *= -1.0f;
+
+            }
+            else if (collisionNormal.x < 0 && facingRight)
+            {
+                facingRight = false;
+                boundBox.x *= -1.0f;
             }
         }
     }
