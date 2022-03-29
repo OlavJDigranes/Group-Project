@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     //Base movement values
     private Vector2 cur_Movement;
     private const float movementSpeed = 3.25f;
+    private const float dashStrength = 2.5f;
     private const float jumpStrength = 5f;
 
     //Modifiers that will be used contextually
@@ -21,6 +22,10 @@ public class PlayerMovement : MonoBehaviour
     //Bool to indicate player has jumped
     private bool hasJumped = false;
 
+    //Bool to indicate player has dashed
+    private bool hasDashed = false;
+    private float dashTimer = 0f;
+
     //Necessary Components on GameObject
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -29,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
 
     //Stored player actions for easier access
     private InputAction walkAction;
+    private InputAction dashAction;
     private InputAction jumpAction;
     private InputAction crouchAction;
 
@@ -57,15 +63,27 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         walkAction = playerInput.actions["Walk"];
+        dashAction = playerInput.actions["Dash"];
         jumpAction = playerInput.actions["Jump"];
         crouchAction = playerInput.actions["Crouch"];
 
         walkAction.performed += handleWalk;
         walkAction.canceled += handleWalk;
+        dashAction.performed += handleDash;
+        dashAction.canceled += handleDash;
         jumpAction.performed += handleJump;
         //jumpAction.canceled += handleJump; --- Might need this later? Hold to climb on contextual surfaces or something (Rory)
         crouchAction.performed += handleCrouch;
         crouchAction.canceled += handleCrouch;
+    }
+
+    private void handleDash(InputAction.CallbackContext obj)
+    {
+        if (!obj.canceled && !hasDashed)
+        {
+            rb.AddForce(new Vector2(isFacingRight ? dashStrength : -dashStrength, 0f), ForceMode2D.Impulse);
+            hasDashed = true;
+        }
     }
 
     // Update is called once per frame
@@ -75,6 +93,15 @@ public class PlayerMovement : MonoBehaviour
         if (cur_Movement.magnitude > 0)
         {
             rb.position += cur_Movement * Time.deltaTime * movementModifier;
+        }
+        if (dashTimer >= 1.8f)
+        {
+            dashTimer = 0f;
+            hasDashed = false;
+        }
+        if (hasDashed)
+        {
+            dashTimer += Time.deltaTime;
         }
     }
 
