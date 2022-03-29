@@ -10,6 +10,7 @@ public class PlayerCombatSystem : MonoBehaviour
 
     private bool facingRight;
 
+    // Player Input
     private PlayerInput playerInput;
 
     // Action Variables
@@ -67,7 +68,7 @@ public class PlayerCombatSystem : MonoBehaviour
             attackPoint.position = new Vector2(gameObject.GetComponentInParent<Transform>().position.x + -1f, attackPoint.position.y);
         }
 
-        Attack();
+        Attack(10);
     }
 
     public void SecondaryCast(InputAction.CallbackContext obj)
@@ -83,7 +84,7 @@ public class PlayerCombatSystem : MonoBehaviour
             attackPoint.position = new Vector2(gameObject.GetComponent<Transform>().position.x + -2f, attackPoint.position.y);
         }
 
-        Attack();
+        Attack(8);
     }
 
     public void UltimateCast(InputAction.CallbackContext obj)
@@ -112,10 +113,19 @@ public class PlayerCombatSystem : MonoBehaviour
             // FOR DEBUGGING, check which enemy was hit by the raycast
             Debug.Log("Ult has hit " + hitEnemy.collider.name);
 
+            // Get common enemy HP
+            int enemyHP = hitEnemy.collider.GetComponent<CommonEnemy>().health;
+
+            // Update the enemy HP
+            hitEnemy.collider.GetComponent<CommonEnemy>().health = enemyHP - 50;
+
+            // Show the enemy HP
+            Debug.Log(hitEnemy.collider.name + "'s Health: " + hitEnemy.collider.GetComponent<CommonEnemy>().health);
+
         }
     }
 
-    private void Attack()
+    private void Attack(int damageDealt)
     {
         // Detect enemies in the attackPoint
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyMask);
@@ -123,10 +133,17 @@ public class PlayerCombatSystem : MonoBehaviour
         // Go through each enemy hit
         foreach (Collider2D enemy in hitEnemies)
         {
-            // TODO - When the enemy script gets created, Apply the damage to hit enemy
+            // Get the enemies health
+            int enemyHP = enemy.GetComponent<CommonEnemy>().health;
 
             // FOR DEBUGGING, show what enemies got hit
             Debug.Log("We hit " + enemy.name);
+
+            // Apply the damage to the enemy
+            enemy.GetComponent<CommonEnemy>().health = enemyHP - damageDealt;
+
+            // FOR DEBUGGING, show the enemy health
+            Debug.Log(enemy.name + "'s Health: " + enemy.GetComponent<CommonEnemy>().health);
         }
     }
 }
