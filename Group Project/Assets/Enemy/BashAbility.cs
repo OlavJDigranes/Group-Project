@@ -16,6 +16,9 @@ public sealed class BashAbility : Ability
     // Constant that's used to determines the final speed of the mini-dash used during the attack.
     private int dashForceMultiplier;
 
+    // Stores the cooldown value, used to reset the cooldown after the ability was used.
+    private float DefaultCooldown;
+
     // Box collider of the attack.
    private BoxCollider2D BashHitbox;
 
@@ -24,19 +27,28 @@ public sealed class BashAbility : Ability
     /// Constructor that automatically sets the damage, cooldown and dash speed.
     /// Also sets the bash force (Force applied when the attack hits the player) and duration (The duration of the hitbox before it despawns).
     /// </summary>
-    public BashAbility()
+    /// <param name="monsterLevel">Level of the monster using this ability</param>
+    public override void Init(int monsterLevel)
     {
-        damage = 6;
-        cooldown = 5.0f;
-        dashForceMultiplier = 20;
+        // Damage increased by monstter level doubled (Base = 4 damage, increase = +2 damage).
+        damage = 2 * monsterLevel;
+
+        // Cooldown is reduced by monster level halved (Base = 5 seconds, per level decrease = -0.5 seconds).
+        cooldown = 5.5f - (monsterLevel / 2);
+        DefaultCooldown = cooldown;
+
+        // Velocity of the dash does not get scaled
+        dashForceMultiplier = 15;
+
+        // Set duration to dummy value to prevent it triggering (Hitting 0.0) outside the function that activates the ability.
         duration = 999.0f;
     }
 
     /// <summary>
-    /// The enemy uses a shield bash attack
-    /// </summary>
+    /// The enemy uses a shield bash attack.
     /// <param name="EliteEnemy">The enemy to generate the attack.</param>
     /// <param name="facingRight">The direction the enemy is facing.</param>
+    /// </summary>
     public override void UseAbility(GameObject eliteEnemy, bool facingRight)
     {
         if (cooldown < 0.0f)
@@ -44,17 +56,20 @@ public sealed class BashAbility : Ability
             // Get the last box collider which is the bash collider
             BoxCollider2D bashCollider = eliteEnemy.GetComponents<BoxCollider2D>().Last();
 
-            // Push out the hitbox to the direction of travel infront of the enemy, essentially the enemy attacking this location.
+            // Push out the hitbox to the direction of travel infront of the enemy, essentially the enemy attacking in that direction.
             bashCollider.size = new Vector2(0.75f, 0.5f);
             bashCollider.offset = new Vector2((facingRight) ? 0.5f : -0.5f , 0);
 
-            // Set duration to 1.0f, where after one second the hitbox will despawn.
+            // Set duration to 1.0f, where after one second the hitbox will be shrunk and unusable again.
             duration = 1.0f;
 
-            // Generate the impulse force for the mini dash used with this ability, and set the cooldown for the ability after the dash force is computed.
+            // Generate the impulse force for the mini dash used with this ability.
             Vector2 dashImpulse = ((facingRight) ? Vector2.right : Vector2.left) * dashForceMultiplier;
             eliteEnemy.GetComponent<Rigidbody2D>().AddForce(dashImpulse, ForceMode2D.Impulse);
-            cooldown = 5.0f;
+
+            // Once ability is used, set cooldown to the default value determined in the Init function + duration (so that cooldown doesn't tick down while the ability
+            // is running, or when duration > 0).
+            cooldown = DefaultCooldown + duration;
         }
     }
 

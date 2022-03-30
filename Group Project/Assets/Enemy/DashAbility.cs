@@ -13,17 +13,27 @@ public sealed class DashAbility : Ability
     // Constant that's used to determines the final speed of the dash.
     private int dashForceMultiplier;
 
-    /// <summary>
-    /// Constructor that automatically sets the damage, cooldown and dash speed.
-    /// </summary>
-    public DashAbility()
-    {
-        damage = 6;
-        cooldown = 5.0f;
-        dashForceMultiplier = 50;
+    // Stores the cooldown value, used to reset the cooldown after the ability was used.
+    private float DefaultCooldown;
 
-        // Negative duration = ignore this property, the ability has no duration.
-        duration = -1.0f;
+    /// <summary>
+    /// Constructor that automatically sets the damage, cooldown and dash speed. Monster level scales and improves the ability's damage and cooldown.
+    /// <param name="monsterLevel">Level of the monster.</param>
+    /// </summary>
+    public override void Init(int monsterLevel)
+    {
+        // Damage is increased by the monster level doubled (Base 6 damage, per level increase = +2 damage).
+        damage = 4 + (monsterLevel * 2);
+
+        // Cooldown is reduced by monster level halved (Base = 5 seconds, per level decrease = -0.5 seconds).
+        cooldown = 5.5f - (monsterLevel / 2);
+        DefaultCooldown = cooldown;
+
+        // Velocity of the dash is increased by monster level doubled (Base = 50 velocity multiplier, per level increase = +2 velocity multiplier).
+        dashForceMultiplier = 48 + (monsterLevel * 2);
+
+        // No duration
+        duration = 0.0f;
     }
 
     /// <summary>
@@ -39,8 +49,7 @@ public sealed class DashAbility : Ability
         {
             Vector2 dashImpulse = ((facingRight) ? Vector2.right : Vector2.left) * dashForceMultiplier;
             EliteEnemy.GetComponent<Rigidbody2D>().AddForce(dashImpulse, ForceMode2D.Impulse);
-            cooldown = 5.0f;
+            cooldown = DefaultCooldown;
         }
     }
 }
-

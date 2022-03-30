@@ -19,20 +19,33 @@ using UnityEngine.InputSystem.LowLevel;
 
 public class EliteEnemy : MonoBehaviour
 {
-    // Modifiable elite enemy health, damage and speed.
-    // Modifiable elite enemy AI (Aggressive: 0 or defensive: 1) and attack type (Melee: 0 or ranged: 1).
+    // Monster level, used to scale the monster's damage and health.
     [SerializeField]
-    public int AttackType;
-    public int AIType;
-    public int Health;
-    public int Damage;
-    public int Speed;
+    private int monsterLevel;
+
+    // Attack type, which dictates how the enemy attacks the player (Melee - 0; Attack with swords or otherwise, Ranged - 1; Attack from afar with projectiles ).
+    [SerializeField]
+    private int AttackType;
+
+    // AI type, which dictates how the enemy moves in relation to the player (Aggressive - 0; charge for the player, Defensive - 1; keep their distance).
+    [SerializeField]
+    private int AIType;
+
+    // Monster drops
+    private int expOnDeath;
+    private int goldOnDeath;
+
+    // Generic monster stats: damage health and movement speed.
+    private int contactDamage;
+    private int health;
+    private int moveSpeed;
+
 
     // The enemy's ability. It is set initially as the ability abstract but will be derived to a specific ability in the start function.
     private Ability EliteAbility;
 
     // Boolean to determine which way the enemy is facing.
-    private bool facingRight;
+    private bool facingRight = false;
 
     // Boolean that determines if the ability relies on a timer to function, used to, for example remove new hitboxes or to finish an attack.
     private bool timedAbilty = false;
@@ -50,52 +63,68 @@ public class EliteEnemy : MonoBehaviour
     {
         // Determine the ability the enemy should use based on it's attack type and AI type.
         // Uses a nested switch statement to handle this.
-        switch (AttackType)
+        switch (AIType)
         {
-            // Melee
+            // Aggressive Enemy
             case 0:
-                switch (AIType)
+                switch (AttackType)
                 {
                     // Melee aggressive enemy
                     case 0:
                         EliteAbility = gameObject.AddComponent<DashAbility>();
+                        EliteAbility.Init(monsterLevel);
                         break;
 
-                    // Melee defensive enemy
+                    // Ranged defensive enemy
                     case 1:
+                        // Some ability...
+                        break;
+
+                    default:
+                        Debug.Log("Error: invalid AI type value was assigned for this enemy.");
+                        break;
+                }
+                // Attach aggressive movement component script
+                break;
+
+            // Defensive Enemy
+            case 1:
+                switch (AttackType)
+                {
+                    // Melee defensive enemy
+                    case 0:
                         EliteAbility = gameObject.AddComponent<BashAbility>();
+                        EliteAbility.Init(monsterLevel);
                         bashHitBox = gameObject.AddComponent<BoxCollider2D>();
                         timedAbilty = true;
                         EliteAbility.duration = 999.0f;
                         break;
 
-                    default:
-                        Debug.Log("Error: invalid attack type value was assigned for this enemy.");
-                        break;
-                }
-                break;
-
-            // Ranged
-            case 1:
-                switch (AIType)
-                {
-                    // Ranged aggressive enemy
-                    case 0:
-                        // Some ability...
-                        break;
-
+                    // Ranged defensive enemy
                     case 1:
                         // Another ability...
                         break;
 
                     default:
-                        Debug.Log("Error: Invalid AI type value was assigned for this enemy.");
+                        Debug.Log("Error: Invalid attack type value was assigned for this enemy.");
                         break;
                 }
+                // Attach defensive movement component script.
                 break;
         }
         // Init the facing direction of the enemy.
         facingRight = true;
+
+        // Setup monster movement speed and drops.
+        // Being elite enemies, they naturally will have improved stats and drops compared to common enemies.
+        contactDamage = 2 + monsterLevel * 6;
+        health = monsterLevel * 15;
+
+        expOnDeath = 50 + monsterLevel * 100;
+        goldOnDeath = monsterLevel * 50;
+
+        moveSpeed = 5;
+
     }
 
     // Update is called once per frame

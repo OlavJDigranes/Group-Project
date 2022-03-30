@@ -352,6 +352,10 @@ PrefabInstance:
       propertyPath: AttackType
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1329401300076093825, guid: 69e17ab37e0aad44d9238fc9c2bd29a7, type: 3}
+      propertyPath: monsterLevel
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6054901183704513104, guid: 69e17ab37e0aad44d9238fc9c2bd29a7, type: 3}
       propertyPath: m_GravityScale
       value: 1
@@ -683,6 +687,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1329401300076093825, guid: 69e17ab37e0aad44d9238fc9c2bd29a7, type: 3}
+      propertyPath: monsterLevel
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6054901183704513105, guid: 69e17ab37e0aad44d9238fc9c2bd29a7, type: 3}
       propertyPath: m_Color.b
       value: 0.062675476
