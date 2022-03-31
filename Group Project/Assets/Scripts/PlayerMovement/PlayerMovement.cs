@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     //Bool to indicate player has jumped
     private bool hasJumped = false;
+    private bool hasDoubleJumped = false;
 
     //Bool to indicate player has dashed
     private bool hasDashed = false;
@@ -108,11 +109,20 @@ public class PlayerMovement : MonoBehaviour
     //Delegated jump event
     private void handleJump(InputAction.CallbackContext obj)
     {
-        if (!obj.canceled && !hasJumped) //only if pressed past threshold
+        if (!obj.canceled && !hasDoubleJumped) //only if pressed past threshold
         {
             rb.AddForce(new Vector2(0f, jumpStrength * jumpModifier), ForceMode2D.Impulse);
-            hasJumped = true;
+            if (!hasJumped)
+            {
+                hasJumped = true;
+            }
+            else if (!hasDoubleJumped)
+            {
+                hasDoubleJumped = true;
+            }
         }
+        print("hasJumped = " + hasJumped);
+        print("hasDoubleJumped" + hasDoubleJumped);
     }
 
     //Delegated walk event
@@ -186,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
             if (Vector2.Angle(Vector2.down, -contact.normal) <= 45)
             {
                 hasJumped = false;
+                hasDoubleJumped = false;
             }
         }
     }
