@@ -4,8 +4,8 @@ using UnityEngine.InputSystem;
 public class PlayerCombatSystem : MonoBehaviour
 {
     // Attack Variables
-    public Transform attackPoint;
-    public float attackRange = 0.5f;
+    private Transform attackPoint;
+    private float attackRange = 0.5f;
     public LayerMask enemyMask;
 
     private bool facingRight;
@@ -21,6 +21,10 @@ public class PlayerCombatSystem : MonoBehaviour
 
     private void Awake()
     {
+        // Assign AttackPoint
+        attackPoint = gameObject.transform.GetChild(0).gameObject.GetComponent<Transform>();
+        Debug.Log(attackPoint.name);
+
         playerInput = GetComponent<PlayerInput>();
 
         // Attack Actions
@@ -60,12 +64,12 @@ public class PlayerCombatSystem : MonoBehaviour
         if(facingRight)
         {
             // Set the current Attack Point to be 1f from the current player position
-            attackPoint.position = new Vector2(gameObject.GetComponentInParent<Transform>().position.x + 1f, attackPoint.position.y);
+            attackPoint.position = new Vector2(gameObject.transform.position.x + 1f, attackPoint.position.y);
         }
         else
         {
             // Set the current Attack Point to be -1f from the current player position
-            attackPoint.position = new Vector2(gameObject.GetComponentInParent<Transform>().position.x + -1f, attackPoint.position.y);
+            attackPoint.position = new Vector2(gameObject.transform.position.x + -1f, attackPoint.position.y);
         }
 
         Attack(10);
@@ -76,12 +80,12 @@ public class PlayerCombatSystem : MonoBehaviour
         if(facingRight)
         {
             // Set the current Attack Point to be 2f from the current player position
-            attackPoint.position = new Vector2(gameObject.GetComponent<Transform>().position.x + 2f, attackPoint.position.y);
+            attackPoint.position = new Vector2(gameObject.transform.position.x + 2f, attackPoint.position.y);
         }
         else
         {
             // Set the current Attack Point to be -2f from the current player position
-            attackPoint.position = new Vector2(gameObject.GetComponent<Transform>().position.x + -2f, attackPoint.position.y);
+            attackPoint.position = new Vector2(gameObject.transform.position.x + -2f, attackPoint.position.y);
         }
 
         Attack(8);

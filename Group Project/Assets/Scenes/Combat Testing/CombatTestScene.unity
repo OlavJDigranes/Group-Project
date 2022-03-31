@@ -617,8 +617,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2014de09803a9cd4abae3dec7ecbeb71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPoint: {fileID: 1318758680}
-  attackRange: 0.5
   enemyMask:
     serializedVersion: 2
     m_Bits: 64
@@ -1065,7 +1063,7 @@ GameObject:
   - component: {fileID: 2136954457}
   - component: {fileID: 2136954456}
   m_Layer: 5
-  m_Name: Text
+  m_Name: HelpText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

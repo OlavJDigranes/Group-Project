@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5379274174316329871}
   - component: {fileID: 5173333560159563874}
   - component: {fileID: 5173333560159563879}
+  - component: {fileID: -6884961530837443855}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -165,3 +166,20 @@ MonoBehaviour:
   m_DefaultActionMap: Move Set 1
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &-6884961530837443855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847223407184843942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2014de09803a9cd4abae3dec7ecbeb71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackPoint: {fileID: 0}
+  attackRange: 0.5
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
