@@ -13,19 +13,25 @@ public sealed class AggressiveMovement : Movement
     /// <returns>True for facing right, false for facing left</returns>
     public override bool FaceTowardsPlayer(GameObject eliteEnemy, GameObject player)
     {
+        // Get horizontal facing direction and return true if it's positive (facing right) or negative otherwise (facing left).
         float normalizedFacingDirection = (player.transform.position - eliteEnemy.transform.position).normalized.x;
         return normalizedFacingDirection > 0.0;
     }
-
+    
+    /// <summary>
+    /// Move the enemy in it's facing direction.
+    /// </summary>
+    /// <param name="eliteEnemy"></param>
+    /// <param name="facingRight"></param>
     public override void Move(GameObject eliteEnemy, bool facingRight)
     {
-        // Init movement offset vector with pre-defined movement speed value.
+        // Calculate move speed based on enemy's moveSpeed scalar.
         Vector2 movement = new Vector2(moveSpeed, 0.0f) * Time.deltaTime;
 
-        // Check the direction the enemy is facing, if positive leave it alone, if negative multiply by -1, multiply by dt.
+        // Set movement direction to the enemy's facing direction.
         movement.x *= ((facingRight) ? 1.0f : -1.0f);
 
-        // Move the monster by the calculated offset vector.
-        eliteEnemy.GetComponent<Rigidbody2D>().AddForce(movement, ForceMode2D.Impulse);
+        // Move the enemy by the movement vector..
+        eliteEnemy.transform.Translate(movement);
     }
 }

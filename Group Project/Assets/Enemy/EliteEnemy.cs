@@ -153,7 +153,10 @@ public class EliteEnemy : MonoBehaviour
             }
         }
 
-       facingRight = EliteMovement.FaceTowardsPlayer(gameObject, GameObject.Find("Player"));
+        // Update enemy's facing direction in relation to the player.
+        facingRight = EliteMovement.FaceTowardsPlayer(gameObject, GameObject.Find("Player"));
+
+        // Move the enemy.
         EliteMovement.Move(gameObject, facingRight);
     }
 
