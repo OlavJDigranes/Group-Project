@@ -44,6 +44,9 @@ public class EliteEnemy : MonoBehaviour
     // The enemy's ability. It is set initially as the ability abstract but will be derived to a specific ability in the start function.
     private Ability EliteAbility;
 
+    // Movement script, used to dictate how the enemy moves in the game.
+    private Movement EliteMovement;
+
     // Boolean to determine which way the enemy is facing.
     private bool facingRight = false;
 
@@ -61,6 +64,20 @@ public class EliteEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        // Init the facing direction of the enemy.
+        facingRight = true;
+
+        // Setup monster movement speed and drops.
+        // Being elite enemies, they naturally will have improved stats and drops compared to common enemies.
+        contactDamage = 2 + monsterLevel * 6;
+        health = monsterLevel * 15;
+
+        expOnDeath = 50 + monsterLevel * 100;
+        goldOnDeath = monsterLevel * 50;
+
+        moveSpeed = 5;
+
         // Determine the ability the enemy should use based on it's attack type and AI type.
         // Uses a nested switch statement to handle this.
         switch (AIType)
@@ -84,7 +101,8 @@ public class EliteEnemy : MonoBehaviour
                         Debug.Log("Error: invalid AI type value was assigned for this enemy.");
                         break;
                 }
-                // Attach aggressive movement component script
+                EliteMovement = gameObject.AddComponent<AggressiveMovement>();
+                EliteMovement.Init(moveSpeed);
                 break;
 
             // Defensive Enemy
@@ -112,19 +130,6 @@ public class EliteEnemy : MonoBehaviour
                 // Attach defensive movement component script.
                 break;
         }
-        // Init the facing direction of the enemy.
-        facingRight = true;
-
-        // Setup monster movement speed and drops.
-        // Being elite enemies, they naturally will have improved stats and drops compared to common enemies.
-        contactDamage = 2 + monsterLevel * 6;
-        health = monsterLevel * 15;
-
-        expOnDeath = 50 + monsterLevel * 100;
-        goldOnDeath = monsterLevel * 50;
-
-        moveSpeed = 5;
-
     }
 
     // Update is called once per frame
@@ -147,6 +152,9 @@ public class EliteEnemy : MonoBehaviour
                 abilityHitPlayer = false;
             }
         }
+
+       facingRight = EliteMovement.FaceTowardsPlayer(gameObject, GameObject.Find("Player"));
+        EliteMovement.Move(gameObject, facingRight);
     }
 
     /// <summary>
@@ -173,6 +181,16 @@ public class EliteEnemy : MonoBehaviour
 
             // Bool that checks if the ability hit is set to true, meaning that the bash will not push the player for the remainder of it's duration.
             abilityHitPlayer = true;
+        }
+        
+        // Enemy itself hits the player
+        else if (col.gameObject.tag == "Player" && col.otherCollider.tag == "Enemy")
+        {
+            Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
+            normalizedHitDirection.y = 0.4f;
+
+            col.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
         }
     }
 }
