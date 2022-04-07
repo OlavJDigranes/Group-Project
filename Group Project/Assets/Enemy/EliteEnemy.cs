@@ -220,6 +220,10 @@ public class EliteEnemy : MonoBehaviour
             col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
         }
 
+        // Collision with any object labelled "Floor" (Which should be the tag set for all walkable surfaces in the game): set onGround to true (Allowing the enemy to jump again.
+        // ANOMALIES:
+        //   - Enemy could "wall climb" by repeatedly running into a wall and jumping.
+        //   - Enemy does not lose onGround status when moving off a floating/tall platform, allowing it to jump in midair once.
         else if (col.gameObject.tag == "Floor" && col.gameObject.transform.position.y < gameObject.transform.position.y)
         {
             onGround = true;
