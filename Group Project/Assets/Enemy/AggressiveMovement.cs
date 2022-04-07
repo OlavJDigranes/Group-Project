@@ -11,10 +11,10 @@ public sealed class AggressiveMovement : Movement
     /// <param name="eliteEnemy">Enemy whose movement is being calculated</param>
     /// <param name="player">The player</param>
     /// <returns>True for facing right, false for facing left</returns>
-    public override bool FaceTowardsPlayer(GameObject eliteEnemy, GameObject player)
+    public override bool FaceTowardsPlayer(Vector2 eliteEnemyPosition, Vector2 playerPosition)
     {
         // Get horizontal facing direction and return true if it's positive (facing right) or negative otherwise (facing left).
-        float normalizedFacingDirection = (player.transform.position - eliteEnemy.transform.position).normalized.x;
+        float normalizedFacingDirection = (playerPosition - eliteEnemyPosition).normalized.x;
         return normalizedFacingDirection > 0.0;
     }
     

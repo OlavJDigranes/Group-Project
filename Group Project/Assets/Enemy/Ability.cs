@@ -36,4 +36,13 @@ public abstract class Ability : MonoBehaviour
     /// </summary>
     /// <param name="monsterLevel"> Level of the monster (Used to scale the stats of the ability to make them deadlier as the game progresses).</param>
     public virtual void Init(int monsterLevel) {Debug.Log("Error: Init function called on a non-existent ability!"); }
+
+    /// <summary>
+    /// Checks if an ability is suitable for use for the elite enemy. Each check is different per ability but will generally check for player position relative
+    /// to the enemy and the ability cooldown.
+    /// </summary>
+    /// <param name="eliteEnemyPosition">Position of the enemy. </param>
+    /// <param name="playerPosition">Position of the player. </param>
+    /// <param name="cooldown">The current cooldown timer of the ability. </param>
+    public virtual bool CheckAbilityUsage(Vector2 eliteEnemyPosition, Vector2 playerPosition, float cooldown) {Debug.Log("Abstract ability check function called."); return false; }
 }

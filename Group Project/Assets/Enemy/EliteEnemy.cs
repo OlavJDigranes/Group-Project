@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
@@ -23,7 +24,7 @@ public class EliteEnemy : MonoBehaviour
     [SerializeField]
     private int monsterLevel;
 
-    // Attack type, which dictates how the enemy attacks the player (Melee - 0; Attack with swords or otherwise, Ranged - 1; Attack from afar with projectiles ).
+    // Attack type, which dictates how the enemy attacks the player (Melee - 0; Attack with melee attacks of any kind, Ranged - 1; Attack from afar with projectiles ).
     [SerializeField]
     private int AttackType;
 
@@ -50,6 +51,9 @@ public class EliteEnemy : MonoBehaviour
     // Boolean to determine which way the enemy is facing.
     private bool facingRight = false;
 
+    // Determines if enemy is touching the floor, used to determine if it is able to jump.
+    private bool onGround;
+
     // Boolean that determines if the ability relies on a timer to function, used to, for example remove new hitboxes or to finish an attack.
     private bool timedAbilty = false;
 
@@ -59,6 +63,9 @@ public class EliteEnemy : MonoBehaviour
     // Boolean that determines if an ability hit the player, used for certain abilities to ensure that it only interacts with the player
     // once per ability usage (to prevent multiple hits at once).
     private bool abilityHitPlayer = false;
+
+    // Keep track of the position of the player. May be integrated into an enemy manager class for efficiency later on, but this'll do.
+    private Vector2 playerPosition;
 
 
     // Start is called before the first frame update
@@ -76,7 +83,7 @@ public class EliteEnemy : MonoBehaviour
         expOnDeath = 50 + monsterLevel * 100;
         goldOnDeath = monsterLevel * 50;
 
-        moveSpeed = 5;
+        moveSpeed = 3;
 
         // Determine the ability the enemy should use based on it's attack type and AI type.
         // Uses a nested switch statement to handle this.
@@ -135,8 +142,31 @@ public class EliteEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
-        EliteAbility.UseAbility(gameObject, facingRight);
+        // Get player position
+        playerPosition = GameObject.Find("Player").transform.position;
+
+        // Update enemy's facing direction in relation to the player.
+        facingRight = EliteMovement.FaceTowardsPlayer(transform.position, playerPosition);
+
+        // Move the enemy.
+        EliteMovement.Move(gameObject, facingRight);
+
+        // Enemy will jump when 3 conditions are satisfied:
+        // - He is on the ground (onGround == true)
+        // - The player is close enough to the enemy (Horizontal distance between enemy and player <= 5 units).
+        // - The player is at least 2 units above the enemy (Player is high enough that the enemy will consider jumping to inflict contact damage).
+        if (Mathf.Abs(transform.position.x - playerPosition.x) <= 5 && onGround && transform.position.y < playerPosition.y - 2)
+        {
+            EliteMovement.Jump(gameObject);
+            onGround = false;
+        }
+
+        // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
+        if (EliteAbility.CheckAbilityUsage(transform.position, playerPosition, EliteAbility.cooldown))
+        {
+            // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
+            EliteAbility.UseAbility(gameObject, facingRight);
+        }
         // Decrement the ability cooldown by dt.
         EliteAbility.cooldown -= Time.deltaTime;
 
@@ -152,12 +182,6 @@ public class EliteEnemy : MonoBehaviour
                 abilityHitPlayer = false;
             }
         }
-
-        // Update enemy's facing direction in relation to the player.
-        facingRight = EliteMovement.FaceTowardsPlayer(gameObject, GameObject.Find("Player"));
-
-        // Move the enemy.
-        EliteMovement.Move(gameObject, facingRight);
     }
 
     /// <summary>
@@ -187,13 +211,18 @@ public class EliteEnemy : MonoBehaviour
         }
         
         // Enemy itself hits the player
-        else if (col.gameObject.tag == "Player" && col.otherCollider.tag == "Enemy")
+        else if (col.gameObject.tag == "Player")
         {
             Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
             normalizedHitDirection.y = 0.4f;
 
             col.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
+        }
+
+        else if (col.gameObject.tag == "Floor" && col.gameObject.transform.position.y < gameObject.transform.position.y)
+        {
+            onGround = true;
         }
     }
 }

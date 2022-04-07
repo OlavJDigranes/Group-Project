@@ -29,8 +29,8 @@ public sealed class DashAbility : Ability
         cooldown = 5.5f - (monsterLevel / 2);
         DefaultCooldown = cooldown;
 
-        // Velocity of the dash is increased by monster level doubled (Base = 50 velocity multiplier, per level increase = +2 velocity multiplier).
-        dashForceMultiplier = 48 + (monsterLevel * 2);
+        // Velocity of the dash is increased by monster level doubled (Base = 40 velocity multiplier, per level increase = +2 velocity multiplier).
+        dashForceMultiplier = 38 + (monsterLevel * 2);
 
         // No duration
         duration = 0.0f;
@@ -51,5 +51,28 @@ public sealed class DashAbility : Ability
             EliteEnemy.GetComponent<Rigidbody2D>().AddForce(dashImpulse, ForceMode2D.Impulse);
             cooldown = DefaultCooldown;
         }
+    }
+
+    /// <summary>
+    /// Check if the dash ability can be used.
+    /// </summary>
+    /// <param name="eliteEnemyPosition">Position of the elite enemy. </param>
+    /// <param name="playerPosition">Position of the player. </param>
+    /// <param name="cooldown">Current cooldown of the ability. </param>
+    /// <returns></returns>
+    public override bool CheckAbilityUsage(Vector2 eliteEnemyPosition, Vector2 playerPosition, float cooldown)
+    {
+        // Ability can't be used if the cooldown has not expired yet.
+        if (cooldown > 0.0f) { return false; }
+
+        // Get horizontal and vertical distances from the player to the enemy.
+        float horizontalDistance = Mathf.Abs(eliteEnemyPosition.x - playerPosition.x);
+        float verticalDistance = Mathf.Abs(eliteEnemyPosition.y - playerPosition.y);
+
+        // Player too close to do a good dash attack.
+        if (horizontalDistance < 2.0f) { return false; }
+
+        // Return true if the enemy is between 2 and 15 units away from the player horizontally and almost lined up vertically (Dash attack can be used) or false otherwise.
+        return horizontalDistance < 15.0f && verticalDistance < 1.5f;
     }
 }
