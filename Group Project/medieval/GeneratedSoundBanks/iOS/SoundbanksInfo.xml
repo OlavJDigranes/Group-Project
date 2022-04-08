@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="iOS" BasePlatform="iOS" SchemaVersion="12" SoundbankVersion="140">
+	<RootPaths>
+		<ProjectRoot>I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\</ProjectRoot>
+		<SourceFilesRoot>I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\</SourceFilesRoot>
+		<SoundBanksRoot>I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\GeneratedSoundBanks\iOS\</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\GeneratedSoundBanks\iOS</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<StreamedFiles/>
+	<MediaFilesNotInAnyBank/>
+	<SoundBanks>
+		<SoundBank Id="436743010" Language="SFX" Hash="1954368101">
+			<ObjectPath>\SoundBanks\Default Work Unit\Character</ObjectPath>
+			<ShortName>Character</ShortName>
+			<Path>Character.bnk</Path>
+			<IncludedEvents>
+				<Event Id="595748461" Name="Play_DoubleJump" ObjectPath="\Events\Default Work Unit\Character\Play_DoubleJump"/>
+				<Event Id="3854155799" Name="Play_Footsteps" ObjectPath="\Events\Default Work Unit\Character\Play_Footsteps">
+					<IncludedMemoryFiles>
+						<File Id="36418138" Language="SFX">
+							<ShortName>fs_hero_forest_run_01.wav</ShortName>
+							<Path>SFX\fs_hero_forest_run_01_10C4C929.wem</Path>
+						</File>
+						<File Id="160481498" Language="SFX">
+							<ShortName>fs_hero_forest_run_02.wav</ShortName>
+							<Path>SFX\fs_hero_forest_run_02_10C4C929.wem</Path>
+						</File>
+						<File Id="200075099" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_run_02.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_run_02_10C4C929.wem</Path>
+						</File>
+						<File Id="260773867" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_walk_05.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_walk_05_10C4C929.wem</Path>
+						</File>
+						<File Id="270928817" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_walk_04.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_walk_04_10C4C929.wem</Path>
+						</File>
+						<File Id="290966365" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_run_03.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_run_03_10C4C929.wem</Path>
+						</File>
+						<File Id="372628333" Language="SFX">
+							<ShortName>fs_hero_forest_walk_02.wav</ShortName>
+							<Path>SFX\fs_hero_forest_walk_02_10C4C929.wem</Path>
+						</File>
+						<File Id="455162103" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_run_06.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_run_06_10C4C929.wem</Path>
+						</File>
+						<File Id="587086020" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_walk_06.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_walk_06_10C4C929.wem</Path>
+						</File>
+						<File Id="609122267" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_run_01.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_run_01_10C4C929.wem</Path>
+						</File>
+						<File Id="719089846" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_walk_01.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_walk_01_10C4C929.wem</Path>
+						</File>
+						<File Id="735943739" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_run_04.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_run_04_10C4C929.wem</Path>
+						</File>
+						<File Id="797938003" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_walk_02.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_walk_02_10C4C929.wem</Path>
+						</File>
+						<File Id="803700039" Language="SFX">
+							<ShortName>fs_hero_forest_walk_03.wav</ShortName>
+							<Path>SFX\fs_hero_forest_walk_03_10C4C929.wem</Path>
+						</File>
+						<File Id="803982857" Language="SFX">
+							<ShortName>fs_hero_forest_run_04.wav</ShortName>
+							<Path>SFX\fs_hero_forest_run_04_10C4C929.wem</Path>
+						</File>
+						<File Id="806749289" Language="SFX">
+							<ShortName>fs_hero_forest_walk_01.wav</ShortName>
+							<Path>SFX\fs_hero_forest_walk_01_10C4C929.wem</Path>
+						</File>
+						<File Id="911574032" Language="SFX">
+							<ShortName>fs_hero_forest_walk_04.wav</ShortName>
+							<Path>SFX\fs_hero_forest_walk_04_10C4C929.wem</Path>
+						</File>
+						<File Id="926978964" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_run_05.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_run_05_10C4C929.wem</Path>
+						</File>
+						<File Id="1041288339" Language="SFX">
+							<ShortName>fs_hero_forest_run_03.wav</ShortName>
+							<Path>SFX\fs_hero_forest_run_03_10C4C929.wem</Path>
+						</File>
+						<File Id="1055264341" Language="SFX">
+							<ShortName>BAS_Player_Footstep_grass_walk_03.wav</ShortName>
+							<Path>SFX\BAS_Player_Footstep_grass_walk_03_10C4C929.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+					<SwitchContainers>
+						<SwitchContainer SwitchValue="{5A53D910-DB67-4D0F-8911-6F131FB35870}">
+							<Children>
+								<SwitchContainer SwitchValue="{CF18AB4E-DD32-47A4-9817-389999C66EF3}">
+									<Media>
+										<File Id="36418138"/>
+										<File Id="160481498"/>
+										<File Id="200075099"/>
+										<File Id="290966365"/>
+										<File Id="455162103"/>
+										<File Id="609122267"/>
+										<File Id="735943739"/>
+										<File Id="803982857"/>
+										<File Id="926978964"/>
+										<File Id="1041288339"/>
+									</Media>
+								</SwitchContainer>
+								<SwitchContainer SwitchValue="{F7C5BF97-8AA2-46B0-8020-E262557ED28F}">
+									<Media>
+										<File Id="260773867"/>
+										<File Id="270928817"/>
+										<File Id="372628333"/>
+										<File Id="587086020"/>
+										<File Id="719089846"/>
+										<File Id="797938003"/>
+										<File Id="803700039"/>
+										<File Id="806749289"/>
+										<File Id="911574032"/>
+										<File Id="1055264341"/>
+									</Media>
+								</SwitchContainer>
+							</Children>
+						</SwitchContainer>
+					</SwitchContainers>
+				</Event>
+				<Event Id="3689126666" Name="Play_Jump" ObjectPath="\Events\Default Work Unit\Character\Play_Jump"/>
+			</IncludedEvents>
+			<SwitchGroups>
+				<SwitchGroup Id="2817994306" Name="Step_Type" ObjectPath="\Switches\Default Work Unit\Footsteps_Switches\Step_Type" GUID="{2103C9F0-DC82-4738-A213-1840627BE3A5}">
+					<Switches>
+						<Switch Id="712161704" Name="Run" ObjectPath="\Switches\Default Work Unit\Footsteps_Switches\Step_Type\Run" GUID="{CF18AB4E-DD32-47A4-9817-389999C66EF3}"/>
+						<Switch Id="2108779966" Name="Walk" ObjectPath="\Switches\Default Work Unit\Footsteps_Switches\Step_Type\Walk" GUID="{F7C5BF97-8AA2-46B0-8020-E262557ED28F}"/>
+					</Switches>
+				</SwitchGroup>
+				<SwitchGroup Id="4064446173" Name="Surface_Type" ObjectPath="\Switches\Default Work Unit\Footsteps_Switches\Surface_Type" GUID="{D3186E03-B4FB-4372-B6E1-128C15232089}">
+					<Switches>
+						<Switch Id="4248645337" Name="Grass" ObjectPath="\Switches\Default Work Unit\Footsteps_Switches\Surface_Type\Grass" GUID="{5A53D910-DB67-4D0F-8911-6F131FB35870}"/>
+					</Switches>
+				</SwitchGroup>
+			</SwitchGroups>
+		</SoundBank>
+		<SoundBank Id="1355168291" Language="SFX" Hash="1130991240">
+			<ObjectPath>Init</ObjectPath>
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+		</SoundBank>
+		<SoundBank Id="3991942870" Language="SFX" Hash="2608841414">
+			<ObjectPath>\SoundBanks\Default Work Unit\Music</ObjectPath>
+			<ShortName>Music</ShortName>
+			<Path>Music.bnk</Path>
+			<IncludedEvents>
+				<Event Id="1934055897" Name="Play_Fanfare" ObjectPath="\Events\Default Work Unit\Music\Play_Fanfare">
+					<IncludedMemoryFiles>
+						<File Id="664978952" Language="SFX">
+							<ShortName>Fanfare_01.wav</ShortName>
+							<Path>SFX\Fanfare_01_D79FB2B7.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2026162439" Name="Play_GeneralMusic" ObjectPath="\Events\Default Work Unit\Music\Play_GeneralMusic">
+					<IncludedMemoryFiles>
+						<File Id="1015286036" Language="SFX">
+							<ShortName>Meoldy_01.wav</ShortName>
+							<Path>SFX\Meoldy_01_D79FB2B7.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1639214083" Name="Stop_Fanfare" ObjectPath="\Events\Default Work Unit\Music\Stop_Fanfare"/>
+				<Event Id="361187857" Name="Stop_GeneralMusic" ObjectPath="\Events\Default Work Unit\Music\Stop_GeneralMusic"/>
+			</IncludedEvents>
+		</SoundBank>
+	</SoundBanks>
+</SoundBanksInfo>

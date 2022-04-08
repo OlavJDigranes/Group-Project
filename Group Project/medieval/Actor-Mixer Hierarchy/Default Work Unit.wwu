@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{365CADF1-6597-490F-AF6D-360B1E56C6F6}" SchemaVersion="103">
+	<AudioObjects>
+		<WorkUnit Name="Default Work Unit" ID="{365CADF1-6597-490F-AF6D-360B1E56C6F6}" PersistMode="Standalone">
+			<ChildrenList>
+				<Sound Name="Meoldy_01" ID="{F8F998AE-54FF-4C48-9E1B-2DC168791B2C}" ShortID="610272511">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CFB3BCD8-6B22-43EB-AF83-BDA89A1C5B91}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8CC00F4A-6AF9-4163-A9C6-E1CEDC4CCE93}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="Meoldy_01" ID="{65579EF9-7EEF-46A1-AB80-E41F1D1E72F5}">
+							<Language>SFX</Language>
+							<AudioFile>Meoldy_01.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="699168195"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ObjectLists/>
+					<ActiveSourceList>
+						<ActiveSource Name="Meoldy_01" ID="{65579EF9-7EEF-46A1-AB80-E41F1D1E72F5}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>

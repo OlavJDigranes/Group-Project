@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{FBDB32E4-96A0-4E7B-9E33-1D241B23CB85}" SchemaVersion="103">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{FBDB32E4-96A0-4E7B-9E33-1D241B23CB85}" PersistMode="Standalone">
+			<ChildrenList>
+				<WorkUnit Name="Character" ID="{C8753057-D575-4E37-9F7C-749C58E19546}" PersistMode="Reference"/>
+				<WorkUnit Name="Music" ID="{49830AD8-A550-4F8D-8CD7-1190C3D2C840}" PersistMode="Reference"/>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

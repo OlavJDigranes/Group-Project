@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{49830AD8-A550-4F8D-8CD7-1190C3D2C840}" SchemaVersion="103" RootDocumentID="{FBDB32E4-96A0-4E7B-9E33-1D241B23CB85}" ParentDocumentID="{FBDB32E4-96A0-4E7B-9E33-1D241B23CB85}">
+	<Events>
+		<WorkUnit Name="Music" ID="{49830AD8-A550-4F8D-8CD7-1190C3D2C840}" OwnerID="{FBDB32E4-96A0-4E7B-9E33-1D241B23CB85}" PersistMode="Nested">
+			<ChildrenList>
+				<Event Name="Play_GeneralMusic" ID="{9FD90613-55BE-4DF6-8F83-3DABA77B0506}">
+					<ChildrenList>
+						<Action Name="" ID="{FF7FC82E-4F49-4F41-B18E-6C67A4C4BA1F}" ShortID="291172474">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Melody_01" ID="{1BDC2827-4E80-4066-A412-77F4864EF896}" WorkUnitID="{4FE03C83-836D-48F1-8D54-37B8BC5AE061}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Fanfare" ID="{6CE2BB87-4265-4AF7-A187-9C9F51259235}">
+					<ChildrenList>
+						<Action Name="" ID="{32294F60-851C-4A77-9B77-939B5AB9958B}" ShortID="952421959">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Fanfare_01" ID="{36170CE3-D13B-4617-97C2-7A81C5827054}" WorkUnitID="{4FE03C83-836D-48F1-8D54-37B8BC5AE061}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_GeneralMusic" ID="{342DA425-7FBB-4747-8B08-74EAB593D731}">
+					<ChildrenList>
+						<Action Name="" ID="{F73583B3-C0A8-4AD4-ABD0-01AA4E4DCE3F}" ShortID="834843109">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Melody_01" ID="{1BDC2827-4E80-4066-A412-77F4864EF896}" WorkUnitID="{4FE03C83-836D-48F1-8D54-37B8BC5AE061}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_Fanfare" ID="{B9884064-EB46-42ED-8B77-0C630DF79052}">
+					<ChildrenList>
+						<Action Name="" ID="{9EED212F-47F6-4168-A444-6D4A5833B720}" ShortID="209271046">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Fanfare_01" ID="{36170CE3-D13B-4617-97C2-7A81C5827054}" WorkUnitID="{4FE03C83-836D-48F1-8D54-37B8BC5AE061}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

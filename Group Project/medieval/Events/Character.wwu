@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{C8753057-D575-4E37-9F7C-749C58E19546}" SchemaVersion="103" RootDocumentID="{FBDB32E4-96A0-4E7B-9E33-1D241B23CB85}" ParentDocumentID="{FBDB32E4-96A0-4E7B-9E33-1D241B23CB85}">
+	<Events>
+		<WorkUnit Name="Character" ID="{C8753057-D575-4E37-9F7C-749C58E19546}" OwnerID="{FBDB32E4-96A0-4E7B-9E33-1D241B23CB85}" PersistMode="Nested">
+			<ChildrenList>
+				<Event Name="Play_Footsteps" ID="{9CFEB793-9492-4608-9853-1A567E635524}">
+					<ChildrenList>
+						<Action Name="" ID="{C4C44AE2-4D32-4B19-BB0B-2BE3A256482F}" ShortID="499248478">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Character_Surface" ID="{BA70EEBD-A9F6-40FD-A322-9E6C997CDA71}" WorkUnitID="{4F078FBC-32B3-4D1C-93F9-E41ED290BAA9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_Jump" ID="{C8DD0E4A-A669-4083-8B71-66FE5A29A6DB}">
+					<ChildrenList>
+						<Action Name="" ID="{6140A261-CAAB-4886-B16C-C08B1C604276}" ShortID="598925195">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Jump" ID="{D8ECAD39-0C21-4453-A4AA-F85FF0FC833F}" WorkUnitID="{4F078FBC-32B3-4D1C-93F9-E41ED290BAA9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_DoubleJump" ID="{282622DE-A606-406C-BB57-0278CF7A22A6}">
+					<ChildrenList>
+						<Action Name="" ID="{4093107D-DA4C-4E81-8BD9-AEF8169ACA08}" ShortID="471218627">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Double_Jump" ID="{747A56C9-9463-46BE-9906-FE42A80E4FD3}" WorkUnitID="{4F078FBC-32B3-4D1C-93F9-E41ED290BAA9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

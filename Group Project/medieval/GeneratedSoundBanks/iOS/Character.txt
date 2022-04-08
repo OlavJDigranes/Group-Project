@@ -1,0 +1,36 @@
+Event	ID	Name			Wwise Object Path	Notes
+	595748461	Play_DoubleJump			\Default Work Unit\Character\Play_DoubleJump	
+	3689126666	Play_Jump			\Default Work Unit\Character\Play_Jump	
+	3854155799	Play_Footsteps			\Default Work Unit\Character\Play_Footsteps	
+
+Switch Group	ID	Name			Wwise Object Path	Notes
+	2817994306	Step_Type			\Default Work Unit\Footsteps_Switches\Step_Type	
+	4064446173	Surface_Type			\Default Work Unit\Footsteps_Switches\Surface_Type	
+
+Switch	ID	Name	Switch Group			Notes
+	712161704	Run	Step_Type			
+	2108779966	Walk	Step_Type			
+	4248645337	Grass	Surface_Type			
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	36418138	fs_hero_forest_run_01	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\fs_hero_forest_run_01_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\fs_hero_forest_run_01		21568
+	160481498	fs_hero_forest_run_02	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\fs_hero_forest_run_02_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\fs_hero_forest_run_02		20544
+	200075099	BAS_Player_Footstep_grass_run_02	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_run_02_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\BAS_Player_Footstep_grass_run_02		25424
+	260773867	BAS_Player_Footstep_grass_walk_05	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_walk_05_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\BAS_Player_Footstep_grass_walk_05		47378
+	270928817	BAS_Player_Footstep_grass_walk_04	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_walk_04_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\BAS_Player_Footstep_grass_walk_04		45296
+	290966365	BAS_Player_Footstep_grass_run_03	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_run_03_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\BAS_Player_Footstep_grass_run_03		26464
+	372628333	fs_hero_forest_walk_02	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\fs_hero_forest_walk_02_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\fs_hero_forest_walk_02		41024
+	455162103	BAS_Player_Footstep_grass_run_06	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_run_06_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\BAS_Player_Footstep_grass_run_06		25896
+	587086020	BAS_Player_Footstep_grass_walk_06	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_walk_06_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\BAS_Player_Footstep_grass_walk_06		47000
+	609122267	BAS_Player_Footstep_grass_run_01	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_run_01_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\BAS_Player_Footstep_grass_run_01		26724
+	719089846	BAS_Player_Footstep_grass_walk_01	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_walk_01_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\BAS_Player_Footstep_grass_walk_01		47188
+	735943739	BAS_Player_Footstep_grass_run_04	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_run_04_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\BAS_Player_Footstep_grass_run_04		26088
+	797938003	BAS_Player_Footstep_grass_walk_02	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_walk_02_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\BAS_Player_Footstep_grass_walk_02		50972
+	803700039	fs_hero_forest_walk_03	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\fs_hero_forest_walk_03_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\fs_hero_forest_walk_03		43072
+	803982857	fs_hero_forest_run_04	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\fs_hero_forest_run_04_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\fs_hero_forest_run_04		21568
+	806749289	fs_hero_forest_walk_01	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\fs_hero_forest_walk_01_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\fs_hero_forest_walk_01		41024
+	911574032	fs_hero_forest_walk_04	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\fs_hero_forest_walk_04_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\fs_hero_forest_walk_04		41024
+	926978964	BAS_Player_Footstep_grass_run_05	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_run_05_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\BAS_Player_Footstep_grass_run_05		23238
+	1041288339	fs_hero_forest_run_03	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\fs_hero_forest_run_03_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Run\fs_hero_forest_run_03		22592
+	1055264341	BAS_Player_Footstep_grass_walk_03	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\BAS_Player_Footstep_grass_walk_03_10C4C929.wem		\Actor-Mixer Hierarchy\Character\Character_Surface\Character_Grass\Grass_Walk\BAS_Player_Footstep_grass_walk_03		48038
+

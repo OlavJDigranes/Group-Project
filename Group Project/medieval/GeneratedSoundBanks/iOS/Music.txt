@@ -1,0 +1,10 @@
+Event	ID	Name			Wwise Object Path	Notes
+	361187857	Stop_GeneralMusic			\Default Work Unit\Music\Stop_GeneralMusic	
+	1639214083	Stop_Fanfare			\Default Work Unit\Music\Stop_Fanfare	
+	1934055897	Play_Fanfare			\Default Work Unit\Music\Play_Fanfare	
+	2026162439	Play_GeneralMusic			\Default Work Unit\Music\Play_GeneralMusic	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	664978952	Fanfare_01	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\Fanfare_01_D79FB2B7.wem		\Interactive Music Hierarchy\Default Work Unit\General_Music\Fanfare_01\Fanfare_01		1152064
+	1015286036	Meoldy_01	I:\Uni\3r\2nd Trimester\Group Project\Game\Group Project\Medieval_Game_wwise\.cache\iOS\SFX\Meoldy_01_D79FB2B7.wem		\Interactive Music Hierarchy\Default Work Unit\General_Music\Melody_01\Meoldy_01		13824064
+
