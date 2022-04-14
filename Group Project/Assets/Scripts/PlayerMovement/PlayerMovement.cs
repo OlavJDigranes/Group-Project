@@ -45,6 +45,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 cc_size_Crouch;
     private Vector2 cc_offset_Crouch;
 
+    // Camera
+    private Camera cam;
+
     //Process components needed for functions
     private void Awake()
     {
@@ -76,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
         //jumpAction.canceled += handleJump; --- Might need this later? Hold to climb on contextual surfaces or something (Rory)
         crouchAction.performed += handleCrouch;
         crouchAction.canceled += handleCrouch;
+        cam = gameObject.transform.GetChild(0).GetComponentInChildren<Camera>();
     }
 
     private void handleDash(InputAction.CallbackContext obj)
@@ -121,6 +125,7 @@ public class PlayerMovement : MonoBehaviour
                 hasDoubleJumped = true;
             }
         }
+        print(cam.transform.position.x);
     }
 
     //Delegated walk event
