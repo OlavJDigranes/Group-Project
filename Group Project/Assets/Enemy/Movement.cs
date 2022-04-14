@@ -38,9 +38,8 @@ public abstract class Movement : MonoBehaviour
     /// Give elite enemy vertical upwards movement, or make him jump. Uses an impulse instead of translation.
     /// If used in timing with an ability that gives the enemy a huge burst of speed (Such as a dash), the enemy will gain a massive burst of diagonal speed. Happens
     /// Very rarely though due to both events needing to trigger at nearly the same time.
-    /// <br></br> Uses a random value to scale the jump (Between 4 and 7) to add more variety and less predictability to enemy jumping.
     /// </summary>
     /// <param name="eliteEnemy">Enemy object.</param>
-    public void Jump(GameObject eliteEnemy)  { eliteEnemy.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, moveSpeed * Random.Range(4, 7)), ForceMode2D.Impulse); }
+    public void Jump(GameObject eliteEnemy)  { eliteEnemy.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, moveSpeed * 10), ForceMode2D.Impulse); }
 
 }

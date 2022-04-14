@@ -48,17 +48,12 @@ public class EliteEnemy : MonoBehaviour
     // Movement script, used to dictate how the enemy moves in the game.
     private Movement EliteMovement;
 
-    // Boolean to determine which way the enemy is facing.
-    private bool facingRight = false;
-
-    // Determines if enemy is touching the floor, used to determine if it is able to jump.
-    private bool onGround;
-
     // Boolean that determines if the ability relies on a timer to function, used to, for example remove new hitboxes or to finish an attack.
     private bool timedAbilty = false;
 
     // Hitbox of the bash ability, set to null initially for cases where the enemy has a different ability, otherwise it will be set to the component.
     private BoxCollider2D bashHitBox = null;
+
 
     // Boolean that determines if an ability hit the player, used for certain abilities to ensure that it only interacts with the player
     // once per ability usage (to prevent multiple hits at once).
@@ -66,6 +61,19 @@ public class EliteEnemy : MonoBehaviour
 
     // Keep track of the position of the player. May be integrated into an enemy manager class for efficiency later on, but this'll do.
     private Vector2 playerPosition;
+
+
+    // Boolean to determine which way the enemy is facing.
+    private bool facingRight = false;
+    // Determines if enemy is touching the floor, used to determine if it is able to jump.
+    private bool onGround;
+
+
+    // Rigidbody component of the enemy
+    private Rigidbody2D rb;
+
+    // Enemy width * 0.5 (Used to set the start position for the ray cast for obstacle detection).
+    private float enemyHalfWidth;
 
 
     // Start is called before the first frame update
@@ -84,6 +92,11 @@ public class EliteEnemy : MonoBehaviour
         goldOnDeath = monsterLevel * 50;
 
         moveSpeed = 3;
+
+        // Get rigidbody component and calculate + store the half-width of the enemy.
+        rb = gameObject.GetComponent<Rigidbody2D>();
+
+        enemyHalfWidth = gameObject.GetComponent<BoxCollider2D>().bounds.size.x * 0.5f;
 
         // Determine the ability the enemy should use based on it's attack type and AI type.
         // Uses a nested switch statement to handle this.
@@ -161,6 +174,28 @@ public class EliteEnemy : MonoBehaviour
             onGround = false;
         }
 
+
+        // Second check for jumping: If the enemy needs to jump over an obstacle.
+        // ANOMALIES:
+        //   - This is not pathfinding. The enemy can and will get trapped inside structures unless intentionally lured out.
+        //   - Because of the function that checks if the enemy is able to jump again, the enemy may sometimes jump multiple times to jump over the obstacle, resulting in a huge
+        // burst of vertical speed.
+        RaycastHit2D hitCheck = Physics2D.Raycast((Vector2)transform.position + new Vector2(enemyHalfWidth, 0), 
+                                         (facingRight) ? Vector2.right : Vector2.left,
+                                         0.8f);
+
+        // Enemy will jump over obstacles when 3 conditions are satisfied:
+        // -  If the collider is not null (This is more done due to a nullReferenceException error when trying to access a non-existent collider).
+        // - The collider has identified the tag as "Floor".
+        // - Enemy is currently on the ground.
+        {
+            if (hitCheck.collider && hitCheck.collider.gameObject.tag == "Floor" && onGround)
+            {
+                EliteMovement.Jump(gameObject);
+                onGround = false;
+            }
+        }
+
         // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
         if (EliteAbility.CheckAbilityUsage(transform.position, playerPosition, EliteAbility.cooldown))
         {
@@ -182,6 +217,10 @@ public class EliteEnemy : MonoBehaviour
                 abilityHitPlayer = false;
             }
         }
+        
+        // Custom implementation of gravity. This is due to the enemy's linear drag being set to 5 to offset the incredible speed burst from dash attacks.
+        // Linear drag massively slows down the acceleration of the enemy while falling, so this counters this slowdown for more realistic falling.
+        rb.AddForce(new Vector2(0, -9.81f));
     }
 
     /// <summary>
@@ -220,11 +259,12 @@ public class EliteEnemy : MonoBehaviour
             col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
         }
 
-        // Collision with any object labelled "Floor" (Which should be the tag set for all walkable surfaces in the game): set onGround to true (Allowing the enemy to jump again.
+        // Collision with any object labelled "Floor" (Which should be the tag set for all walkable surfaces in the game): allow enemy to jump again if he is walking on the floor
         // ANOMALIES:
-        //   - Enemy could "wall climb" by repeatedly running into a wall and jumping.
+        //   - Enemy could "wall climb" by repeatedly running into a wall and jumping. (Can be fixed by also testing with a raycast, but it's a minor (and entertaining) bug.
         //   - Enemy does not lose onGround status when moving off a floating/tall platform, allowing it to jump in midair once.
-        else if (col.gameObject.tag == "Floor" && col.gameObject.transform.position.y < gameObject.transform.position.y)
+        else if (col.gameObject.tag == "Floor" &&
+                 col.gameObject.transform.position.y < gameObject.transform.position.y)
         {
             onGround = true;
         }
