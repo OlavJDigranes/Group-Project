@@ -33,7 +33,7 @@ public class PlayerCombatSystem : MonoBehaviour
     public void PrimaryCast(InputAction.CallbackContext obj)
     {
         // Set the current Attack Point to be 1f from the current player position
-        attackPoint.position = new Vector2(GameObject.Find("Player").GetComponent<Transform>().position.x + 1f, attackPoint.position.y);
+        attackPoint.position = new Vector2(gameObject.GetComponentInParent<Transform>().position.x + 1f, attackPoint.position.y);
 
         Attack();
     }
@@ -41,7 +41,7 @@ public class PlayerCombatSystem : MonoBehaviour
     public void SecondaryCast(InputAction.CallbackContext obj)
     {
         // Set the current Attack Point to be 2f from the current player position
-        attackPoint.position = new Vector2(GameObject.Find("Player").GetComponent<Transform>().position.x + 2f, attackPoint.position.y);
+        attackPoint.position = new Vector2(gameObject.GetComponentInParent<Transform>().position.x + 2f, attackPoint.position.y);
 
         Attack();
     }
