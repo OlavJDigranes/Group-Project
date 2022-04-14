@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 /// <summary>
 /// Abstract ability class.
@@ -13,7 +15,7 @@ public abstract class Ability : MonoBehaviour
     // Cooldown timer thats triggered on ability use.
     public float cooldown;
 
-    // Duration of the ability. (-1.0f means the ability's duration does not need to be measured).
+    // Duration of the ability. (0.0 indicates no duration; ability is instantaneous or duration does not need to be measured).
     public float duration;
 
     /// <summary>
@@ -28,4 +30,19 @@ public abstract class Ability : MonoBehaviour
     /// </summary>
     /// <param name="eliteEnemy"> The elite enemy object whose ability is being ended. </param>
     public virtual void StopAbility(GameObject eliteEnemy) {Debug.Log("Error: Elite enemy attempted to stop an ability with no use time!"); }
+
+    /// <summary>
+    /// Setup parameters of the ability.
+    /// </summary>
+    /// <param name="monsterLevel"> Level of the monster (Used to scale the stats of the ability to make them deadlier as the game progresses).</param>
+    public virtual void Init(int monsterLevel) {Debug.Log("Error: Init function called on a non-existent ability!"); }
+
+    /// <summary>
+    /// Checks if an ability is suitable for use for the elite enemy. Each check is different per ability but will generally check for player position relative
+    /// to the enemy and the ability cooldown.
+    /// </summary>
+    /// <param name="eliteEnemyPosition">Position of the enemy. </param>
+    /// <param name="playerPosition">Position of the player. </param>
+    /// <param name="cooldown">The current cooldown timer of the ability. </param>
+    public virtual bool CheckAbilityUsage(Vector2 eliteEnemyPosition, Vector2 playerPosition, float cooldown) {Debug.Log("Abstract ability check function called."); return false; }
 }
