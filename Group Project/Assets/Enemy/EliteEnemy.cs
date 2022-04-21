@@ -24,18 +24,21 @@ using Vector2 = UnityEngine.Vector2;
 public class EliteEnemy : MonoBehaviour
 {
     // Monster level, used to scale the monster's damage and health.
-    [SerializeField]
-    private int monsterLevel;
+    [SerializeField] private int monsterLevel;
 
-    // Attack type, which dictates how the enemy attacks the player (Melee - 0; Attack with melee attacks of any kind, Ranged - 1; Attack from afar with projectiles ).
-    [SerializeField]
-    private int AttackType;
+    // List of abilities elite enemies can have.
+    public enum ABILITYNAME
+    {
+        // MELEE ABILITIES
+        DASH, // Aggressive dash.
+        BASH // Aggressive with a high-knockback attack.
+    };
 
-    // AI type, which dictates how the enemy moves in relation to the player (Aggressive - 0; charge for the player, Defensive - 1; keep their distance).
-    [SerializeField]
-    private int AIType;
+    // Retrieve ability selected for this enemy.
+    [SerializeField] public ABILITYNAME abilityName;
 
-    // Monster drops
+
+// Monster drops
     private int expOnDeath;
     private int goldOnDeath;
 
@@ -103,58 +106,25 @@ public class EliteEnemy : MonoBehaviour
 
         enemyHalfWidth = gameObject.GetComponent<BoxCollider2D>().bounds.size.x * 0.5f;
 
-        // Determine the ability the enemy should use based on it's attack type and AI type.
-        // Uses a nested switch statement to handle this.
-        switch (AIType)
+        // Read the input ability name and setup the corresponding ability script.
+        switch (abilityName)
         {
-            // Aggressive Enemy
-            case 0:
-                switch (AttackType)
-                {
-                    // Melee aggressive enemy
-                    case 0:
-                        EliteAbility = gameObject.AddComponent<DashAbility>();
-                        EliteAbility.Init(monsterLevel);
-                        break;
-
-                    // Ranged defensive enemy
-                    case 1:
-                        // Some ability...
-                        break;
-
-                    default:
-                        Debug.Log("Error: invalid AI type value was assigned for this enemy.");
-                        break;
-                }
+            // Dash
+            case ABILITYNAME.DASH:
+                EliteAbility = gameObject.AddComponent<DashAbility>();
                 EliteMovement = gameObject.AddComponent<AggressiveMovement>();
-                EliteMovement.Init(moveSpeed);
                 break;
 
-            // Defensive Enemy
-            case 1:
-                switch (AttackType)
-                {
-                    // Melee defensive enemy
-                    case 0:
-                        EliteAbility = gameObject.AddComponent<BashAbility>();
-                        EliteAbility.Init(monsterLevel);
-                        bashHitBox = gameObject.AddComponent<BoxCollider2D>();
-                        timedAbilty = true;
-                        EliteAbility.duration = 999.0f;
-                        break;
-
-                    // Ranged defensive enemy
-                    case 1:
-                        // Another ability...
-                        break;
-
-                    default:
-                        Debug.Log("Error: Invalid attack type value was assigned for this enemy.");
-                        break;
-                }
-                // Attach defensive movement component script.
+            // Bash
+            case ABILITYNAME.BASH:
+                EliteAbility = gameObject.AddComponent<DashAbility>();
+                EliteMovement = gameObject.AddComponent<AggressiveMovement>();
                 break;
         }
+
+        // Call init functions for movement and ability.
+        EliteAbility.Init(monsterLevel);
+        EliteMovement.Init(moveSpeed);
     }
 
     // Update is called once per frame
