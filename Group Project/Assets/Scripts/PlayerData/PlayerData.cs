@@ -10,14 +10,16 @@ public class PlayerData : MonoBehaviour
         int _health;
         int _stamina;
         int _mana;
+        int _gold;
         int _lastDamage;
         List<GameObject> _inventory;
 
-        public Status(int Health, int Stamina, int Mana, List<GameObject> Inventory)
+        public Status(int Health, int Stamina, int Mana, int Gold, List<GameObject> Inventory)
         {
             _health = Health;
             _stamina = Stamina;
             _mana = Mana;
+            _gold = Gold;
             _lastDamage = 0;
             _inventory = Inventory;
         }
@@ -50,6 +52,26 @@ public class PlayerData : MonoBehaviour
         public int GetMana()
         {
             return _mana;
+        }
+
+        public void SetGold(int Gold)
+        {
+            _gold = Gold;
+        }
+
+        public void AddGold(int GoldToAdd)
+        {
+            _gold += GoldToAdd;
+        }
+
+        public void RemoveGold(int GoldToRemove)
+        {
+            _gold -= GoldToRemove;
+        }
+
+        public int GetGold()
+        {
+            return _gold;
         }
 
         public void SetLastDamage(int LastDamage)
@@ -98,6 +120,8 @@ public class PlayerData : MonoBehaviour
     [SerializeField]
     private int Mana;
     [SerializeField]
+    private int Gold;
+    [SerializeField]
     private List<GameObject> Inventory;
 
     private void Awake()
@@ -109,6 +133,7 @@ public class PlayerData : MonoBehaviour
         _status.SetHealth(Health);
         _status.SetStamina(Stamina);
         _status.SetMana(Mana);
+        _status.SetGold(Gold);
         _status.SetLastDamage(0);
         _status.ReplaceInventory(Inventory);
     }

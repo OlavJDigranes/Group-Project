@@ -125,7 +125,7 @@ public class PlayerMovement : MonoBehaviour
                 hasDoubleJumped = true;
             }
         }
-        print(cam.transform.position.x);
+        print(cam.transform.position.y);
     }
 
     //Delegated walk event
