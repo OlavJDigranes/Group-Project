@@ -254,5 +254,67 @@ public class EliteEnemy : MonoBehaviour
         {
             onGround = true;
         }
+
+
+        // Handle collision with player's primary attack
+        if (col.gameObject.tag == "Primary_Attack" || col.gameObject.tag == "Secondary_Attack" || col.gameObject.tag == "Ultimate_Attack")
+        {
+            // Generate incoming damage value, generated from the player's attack value per attack, and the impulse multiplier of the force of the
+            // attack (Stronger attack = greater impulse, more visual power in the strike).
+            int incomingDamage;
+            Vector2 attackImpulseMultiplier = new Vector2(1.25f, 1.25f);
+
+            // Some accessor or getter needed per player attack to determine the incoming damage.
+            // Primary attack - 100% hit force multiplier
+            if (col.gameObject.tag == "Primary_Attack")
+            {
+                /*incomingDamage = Player.Get_Primary_Attack_Damage(); */
+            }
+
+            // Secondary attack - 133% hit force multiplier
+            else if (col.gameObject.tag == "Secondary_Attack")
+            {
+                /*incomingDamage = Player.Get_Secondary_Attack_Damage(); */
+                attackImpulseMultiplier *= 1.33f;
+            }
+
+            // Ultimate attack - 166% hit force multiplier: Might be a one-shot attack, leaving this anyway until player attack design is solidified.
+            else if (col.gameObject.tag == "Ultimate_Attack")
+            {
+                /*incomingDamage = Player.Get_Ultimate_Attack_Damage();*/
+                attackImpulseMultiplier *= 1.66f;
+            }
+
+
+            // With damage value found, decrease health by the damage value, check if this is a fatal attack.
+            //health -= incomingDamage;
+            if (health <= 0)
+            {
+                // Die if health is 0 or less. Perhaps also a death animation if time permits?
+                Destroy(transform.gameObject);
+
+                // give player exp and gold, etc etc. No player accessor functions yet so these are approximate implementations
+                // for later use in actual implementation:
+                /*
+                 * Player.exp += expOnDeath;
+                 * Player.CheckForLevelUp(); <-- Dynamically check if the player can level up (Reached exp requirement) every time exp is awarded.
+                 * Player.gold += goldOnDeath;
+                 */
+            }
+
+
+            // Enemy survived, but throw him back to give the attack more visual power.
+            // Throwing the enemy back requires finding the normal between the player/player attack and the enemy.
+            else
+            {
+                // Get collision normal to find force direction
+                Vector2 collisionNormal = (transform.position - col.transform.position).normalized;
+                // Add some height to the force to give it more impact.
+                collisionNormal.y = 0.5f;
+
+                // Add force, the collision normal multiplied by the impulse of the player attack.
+                rb.AddForce(4 * collisionNormal * attackImpulseMultiplier, ForceMode2D.Impulse);
+            }
+        }
     }
 }
