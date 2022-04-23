@@ -23,7 +23,6 @@ public class PlayerCombatSystem : MonoBehaviour
     {
         // Assign AttackPoint
         attackPoint = gameObject.transform.GetChild(0).gameObject.GetComponent<Transform>();
-        Debug.Log(attackPoint.name);
 
         playerInput = GetComponent<PlayerInput>();
 
