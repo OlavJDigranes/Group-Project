@@ -23,6 +23,7 @@ public class BossEnemy : MonoBehaviour
 
     // Boss abilities are predefined and cannot be changed.
     private List<Ability> bossAbilities = new List<Ability>();
+    public int BOSS_ABILITY_COUNT;
 
     // Boss drops
     private int expOnDeath;
@@ -34,10 +35,6 @@ public class BossEnemy : MonoBehaviour
     private int moveSpeed;
 
 
-    // this'll be hell
-    public List<Ability> BossAbilities;
-    public int BOSS_ABILITY_COUNT;
-    
     // Movement script, will be set to aggressive.
     private Movement EliteMovement;
 
@@ -62,7 +59,6 @@ public class BossEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        BOSS_ABILITY_COUNT = 2;
         // Init the facing direction of the enemy.
         facingRight = true;
 
@@ -86,7 +82,7 @@ public class BossEnemy : MonoBehaviour
         EliteMovement = gameObject.AddComponent<AggressiveMovement>();
         EliteMovement.Init(moveSpeed);
         gameObject.AddComponent<DashAbility>();
-        bossAbilities.Add(gameObject.AddComponent<DashAbility>());
+       // bossAbilities.Add(gameObject.AddComponent<DashAbility>());
         bossAbilities.Add(gameObject.AddComponent<BashAbility>());
         foreach (Ability a in bossAbilities) { a.Init(bossLevel);}
     }
@@ -142,7 +138,7 @@ public class BossEnemy : MonoBehaviour
         {
 
             // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
-            if (bossAbilities[i].CheckAbilityUsage(transform.position, playerPosition, bossAbilities[i].cooldown))
+            if (bossAbilities[i].cooldown < 0.0 && bossAbilities[i].CheckAbilityUsage(transform.position, playerPosition))
             {
                 // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
                 bossAbilities[i].UseAbility(gameObject, facingRight);

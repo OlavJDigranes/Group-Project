@@ -30,6 +30,8 @@ public sealed class BashAbility : Ability
     /// <param name="monsterLevel">Level of the monster using this ability</param>
     public override void Init(int monsterLevel)
     {
+        name = "Bash";
+
         // Damage increased by monstter level doubled (Base = 4 damage, increase = +2 damage).
         damage = 2 * monsterLevel;
 
@@ -42,6 +44,8 @@ public sealed class BashAbility : Ability
 
         // Set duration to dummy value to prevent it triggering (Hitting 0.0) outside the function that activates the ability.
         duration = 999.0f;
+
+        hasDuration = true;
     }
 
     /// <summary>
@@ -88,5 +92,26 @@ public sealed class BashAbility : Ability
 
         // Reset duration back to the dummy value 999 so that this ability won't get accidentally triggered before the next ability execution.
         duration = 999.0f;
+    }
+
+
+    /// <summary>
+    /// Check if the bash ability can be used.
+    /// </summary>
+    /// <param name="eliteEnemyPosition">Position of the elite enemy. </param>
+    /// <param name="playerPosition">Position of the player. </param>
+    /// <returns>bool True = Ability will be used in this frame, False = Ability cannot/will not be used this frame.</returns>
+    public override bool CheckAbilityUsage(Vector2 eliteEnemyPosition, Vector2 playerPosition)
+    {
+        // Get horizontal and vertical distances from the player to the enemy.
+        float horizontalDistance = Mathf.Abs(eliteEnemyPosition.x - playerPosition.x);
+        float verticalDistance = Mathf.Abs(eliteEnemyPosition.y - playerPosition.y);
+
+        // Too close to perform a bash attack. Also minimizes the chances of generating a physics glitch where the player will be thrown
+        // incredibly far from the attack.
+        if (horizontalDistance < 1.0f) { return false; }
+
+        // If the player is 3 units or closer away from the elite enemy and more or less aligned on the y-axis, return true.
+        return horizontalDistance < 3.0f && verticalDistance < 0.5f;
     }
 }

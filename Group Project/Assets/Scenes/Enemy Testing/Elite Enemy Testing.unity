@@ -484,6 +484,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1329401300076093825, guid: 69e17ab37e0aad44d9238fc9c2bd29a7, type: 3}
+      propertyPath: abilityName
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1329401300076093825, guid: 69e17ab37e0aad44d9238fc9c2bd29a7, type: 3}
       propertyPath: monsterLevel
       value: 1
       objectReference: {fileID: 0}

@@ -47,16 +47,8 @@ public class EliteEnemy : MonoBehaviour
     // Movement script, used to dictate how the enemy moves in the game.
     private Movement EliteMovement;
 
-    // Boolean that determines if the ability relies on a timer to function, used to, for example remove new hitboxes or to finish an attack.
-    private bool timedAbilty = false;
-
     // Hitbox of the bash ability, set to null initially for cases where the enemy has a different ability, otherwise it will be set to the component.
     private BoxCollider2D bashHitBox = null;
-
-    // Boolean that determines if an ability hit the player, used for certain abilities to ensure that it only interacts with the player
-    // once per ability usage (to prevent multiple hits at once).
-    private bool abilityHitPlayer = false;
-
 
     // Keep track of the position of the player. May be integrated into an enemy manager class for efficiency later on, but this'll do.
     private Vector2 playerPosition;
@@ -110,14 +102,23 @@ public class EliteEnemy : MonoBehaviour
 
             // Bash
             case ABILITYNAME.BASH:
-                EliteAbility = gameObject.AddComponent<DashAbility>();
+                EliteAbility = gameObject.AddComponent<BashAbility>();
                 EliteMovement = gameObject.AddComponent<AggressiveMovement>();
                 break;
         }
 
-        // Call init functions for movement and ability.
+        // Call init/constructor functions for movement and ability.
         EliteAbility.Init(monsterLevel);
         EliteMovement.Init(moveSpeed);
+
+        // If the enemy has the bash ability, give it a hitbox to do the bash attack with. Also set it's size to 0 so that it doesn't accidentally hit the player
+        // outside of ability use.
+        if (EliteAbility.name == "Bash") 
+        {
+            bashHitBox = gameObject.AddComponent<BoxCollider2D>(); 
+            bashHitBox.size = Vector2.zero;
+            bashHitBox.name = "Bash";
+        }
     }
 
     // Update is called once per frame
@@ -128,6 +129,8 @@ public class EliteEnemy : MonoBehaviour
 
         // If asleep, check if player moved close enough to the enemy to activate/wake up the enemy.
         // Enemy will begin to attack the player when the player is around 35 metres away from it.
+        // Active check is done first so that when the enemy becomes active, it will always check for the bool first, removing the need of performing
+        // an expensive distance check per frame.
         if (!active && Vector2.Distance(playerPosition, (Vector2)transform.position) < 35) { active = true; }
 
         // Enemy is awake, and so it's update function will run.
@@ -156,7 +159,7 @@ public class EliteEnemy : MonoBehaviour
             // ANOMALIES:
             //   - This is not pathfinding. The enemy can and will get trapped inside structures unless intentionally lured out.
             //   - Because of the function that checks if the enemy is able to jump again, the enemy may sometimes jump multiple times to jump over the obstacle, resulting in a huge
-            // burst of vertical speed.
+            // burst of vertical speed. This can be alleviated by having straight, axis-aligned terrain.
             RaycastHit2D hitCheck = Physics2D.Raycast((Vector2) transform.position + new Vector2(enemyHalfWidth, 0),
                 (facingRight) ? Vector2.right : Vector2.left,
                 0.8f);
@@ -174,7 +177,7 @@ public class EliteEnemy : MonoBehaviour
             }
 
             // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
-            if (EliteAbility.CheckAbilityUsage(transform.position, playerPosition, EliteAbility.cooldown))
+            if ( EliteAbility.cooldown < 0.0 && EliteAbility.CheckAbilityUsage(transform.position, playerPosition))
             {
                 // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
                 EliteAbility.UseAbility(gameObject, facingRight);
@@ -185,14 +188,13 @@ public class EliteEnemy : MonoBehaviour
 
             // If the elite ability relies on a after-use timer, decrement it by dt.
             // Once this timer hits 0, run another function to finish/despawn the attack.
-            if (timedAbilty)
+            if (EliteAbility.hasDuration)
             {
                 EliteAbility.duration -= Time.deltaTime;
 
                 if (EliteAbility.duration <= 0.0f)
                 {
                     EliteAbility.StopAbility(gameObject);
-                    abilityHitPlayer = false;
                 }
             }
 
@@ -211,21 +213,30 @@ public class EliteEnemy : MonoBehaviour
         // col: other object
         // col.otherCollider: this object
 
-        // Shield bash hits player
-        if ((col.gameObject.tag == "Player" && col.otherCollider.Equals(bashHitBox)) && !abilityHitPlayer)
+        // Collision with any object labelled "Floor" (Which should be the tag set for all walkable surfaces in the game): allow enemy to jump again if he is walking on the floor
+        // ANOMALIES:
+        //   - Enemy could "wall climb" by repeatedly running into a wall and jumping. (Can be fixed by also testing with a raycast, but it's a minor (and entertaining) bug.
+        //   - Enemy does not lose onGround status when moving off a floating/tall platform, allowing it to jump in midair once.
+        if (col.gameObject.tag == "Floor" &&
+                 col.gameObject.transform.position.y < gameObject.transform.position.y)
         {
+            onGround = true;
+        }
+
+        // Shield bash hits player
+        else if (bashHitBox.IsTouching(GameObject.Find("Player").gameObject.GetComponent<BoxCollider2D>()))
+        {
+            Debug.Log("ppog");
             // Get the normalized hit direction and set the y value manually to add height and impact to this hit.
             Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
-            normalizedHitDirection.y = 0.50f;
+            normalizedHitDirection.y = 0.66f;
 
             // Push the player back by this normalized hit direction as an impulse force.
             // ANOMALY: Huge horizontal force is also added when the player is directly next to the enemy as he uses this ability. Likely
             // due to collision wackiness from the player being directly inside the ability hitbox. Might fix but is overall low priority
             // due to player being very unlikely to be that close to the enemy (When the ability is used) in actual gameplay.
-            col.gameObject.GetComponent<Rigidbody2D>().AddForce(4 * normalizedHitDirection, ForceMode2D.Impulse);
-
-            // Bool that checks if the ability hit is set to true, meaning that the bash will not push the player for the remainder of it's duration.
-            abilityHitPlayer = true;
+            col.gameObject.GetComponent<Rigidbody2D>().AddForce(7 * normalizedHitDirection, ForceMode2D.Impulse);
+            EliteAbility.StopAbility(this.gameObject);
         }
         
         // Enemy itself hits the player
@@ -233,19 +244,7 @@ public class EliteEnemy : MonoBehaviour
         {
             Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
             normalizedHitDirection.y = 0.4f;
-
-            col.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
-        }
-
-        // Collision with any object labelled "Floor" (Which should be the tag set for all walkable surfaces in the game): allow enemy to jump again if he is walking on the floor
-        // ANOMALIES:
-        //   - Enemy could "wall climb" by repeatedly running into a wall and jumping. (Can be fixed by also testing with a raycast, but it's a minor (and entertaining) bug.
-        //   - Enemy does not lose onGround status when moving off a floating/tall platform, allowing it to jump in midair once.
-        else if (col.gameObject.tag == "Floor" &&
-                 col.gameObject.transform.position.y < gameObject.transform.position.y)
-        {
-            onGround = true;
         }
     }
 }
