@@ -17,7 +17,7 @@ using Vector2 = UnityEngine.Vector2;
 //     --> ENVIRONMENT
 //     --> IT'S OWN PROJECTILE
 // --> OTHER COMPLICATIONS THAT WILL TRIP ME UP
-public class BossEnemy : MonoBehaviour
+public class BossEnemy : Enemy
 {
     [SerializeField] private int bossLevel;
 
@@ -25,15 +25,8 @@ public class BossEnemy : MonoBehaviour
     private List<Ability> bossAbilities = new List<Ability>();
     public int BOSS_ABILITY_COUNT;
 
-    // Boss drops
-    private int expOnDeath;
-    private int goldOnDeath;
-
-    // Generic monster stats: damage health and movement speed.
-    private int contactDamage;
-    private int health;
-    private int moveSpeed;
-
+    // Hitbox of the bash ability, set to null initially for cases where the enemy has a different ability, otherwise it will be set to the component.
+    private BoxCollider2D bashHitBox = null;
 
     // Movement script, will be set to aggressive.
     private Movement EliteMovement;
@@ -49,6 +42,8 @@ public class BossEnemy : MonoBehaviour
     // Determines if enemy is touching the floor, used to determine if it is able to jump.
     private bool onGround;
 
+    // Iterator for the ability updates, used to get the damage of a specific ability in use in the Enemy abstract class.
+    public int i = 0;
 
     // Rigidbody component of the enemy
     private Rigidbody2D rb;
@@ -57,7 +52,7 @@ public class BossEnemy : MonoBehaviour
     private float enemyHalfWidth;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
         // Init the facing direction of the enemy.
         facingRight = true;
@@ -84,11 +79,25 @@ public class BossEnemy : MonoBehaviour
         gameObject.AddComponent<DashAbility>();
        // bossAbilities.Add(gameObject.AddComponent<DashAbility>());
         bossAbilities.Add(gameObject.AddComponent<BashAbility>());
-        foreach (Ability a in bossAbilities) { a.Init(bossLevel);}
+
+        // Init abilities
+        foreach (Ability a in bossAbilities)
+        {
+            a.Init(bossLevel);
+
+            // If the enemy has the bash ability, give it a hitbox to do the bash attack with. Also set it's size to 0 so that it doesn't accidentally hit the player
+            // outside of ability use.
+            if (a.name == "Bash")
+            {
+                bashHitBox = gameObject.AddComponent<BoxCollider2D>();
+                bashHitBox.size = Vector2.zero;
+                bashHitBox.name = "Bash";
+            }
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
         // Get player position
         playerPosition = GameObject.Find("Player").transform.position;
@@ -134,7 +143,7 @@ public class BossEnemy : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < BOSS_ABILITY_COUNT; i++)
+        for (i = 0; i < BOSS_ABILITY_COUNT; i++)
         {
 
             // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
@@ -180,7 +189,6 @@ public class BossEnemy : MonoBehaviour
             Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
             normalizedHitDirection.y = 0.4f;
 
-            col.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
         }
 
@@ -192,6 +200,26 @@ public class BossEnemy : MonoBehaviour
                  col.gameObject.transform.position.y < gameObject.transform.position.y)
         {
             onGround = true;
+        }
+
+        // Shield bash hits player: Only runs if the hit box actually exists/the enemy has the bash ability.
+        else if (bashHitBox != null)
+        {
+            if (bashHitBox.IsTouching(GameObject.Find("Player").gameObject.GetComponent<BoxCollider2D>()))
+            {
+                // Get the normalized hit direction and set the y value manually to add height and impact to this hit.
+                Vector2 normalizedHitDirection =
+                    (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
+                normalizedHitDirection.y = 0.66f;
+
+                // Push the player back by this normalized hit direction as an impulse force.
+                // ANOMALY: Huge horizontal force is also added when the player is directly next to the enemy as he uses this ability. Likely
+                // due to collision wackiness from the player being directly inside the ability hitbox.
+                col.gameObject.GetComponent<Rigidbody2D>()
+                    .AddForce(7 * normalizedHitDirection, ForceMode2D.Impulse);
+
+                GetComponent<BashAbility>().StopAbility(gameObject);
+            }
         }
     }
 }

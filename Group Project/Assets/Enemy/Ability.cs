@@ -10,7 +10,7 @@ using UnityEngine.InputSystem.LowLevel;
 public abstract class Ability : MonoBehaviour
 {
     // Damage inflicted by this ability.
-    protected int damage;
+    public int damage;
 
     // Cooldown timer thats triggered on ability use.
     public float cooldown;

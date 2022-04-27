@@ -14,7 +14,7 @@ using Vector2 = UnityEngine.Vector2;
 // -> Abilities for enemies (such as projectiles, teleportation, summoning enemies, speed/power enhancements..). // Melee abilities done \\
 // -> Ranged enemies
 
-public class EliteEnemy : MonoBehaviour
+public class EliteEnemy : Enemy
 {
     // Monster level, used to scale the monster's damage and health.
     [SerializeField] private int monsterLevel;
@@ -29,17 +29,6 @@ public class EliteEnemy : MonoBehaviour
 
     // Retrieve ability selected for this enemy.
     [SerializeField] public ABILITYNAME abilityName;
-
-
-// Monster drops
-    private int expOnDeath;
-    private int goldOnDeath;
-
-    // Generic monster stats: damage health and movement speed.
-    private int contactDamage;
-    private int health;
-    private int moveSpeed;
-
 
     // The enemy's ability. It is set initially as the ability abstract but will be derived to a specific ability in the start function.
     private Ability EliteAbility;
@@ -70,7 +59,7 @@ public class EliteEnemy : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
 
         // Init the facing direction of the enemy.
@@ -122,7 +111,7 @@ public class EliteEnemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
         // Get player position
         playerPosition = GameObject.Find("Player").transform.position;
@@ -223,22 +212,26 @@ public class EliteEnemy : MonoBehaviour
             onGround = true;
         }
 
-        // Shield bash hits player
-        else if (bashHitBox.IsTouching(GameObject.Find("Player").gameObject.GetComponent<BoxCollider2D>()))
-        {
-            Debug.Log("ppog");
+        // Shield bash hits player: Only runs if the hit box actually exists/the enemy has the bash ability.
+    else if (bashHitBox != null)
+    {
+        if (bashHitBox.IsTouching(GameObject.Find("Player").gameObject.GetComponent<BoxCollider2D>()))
+        { 
             // Get the normalized hit direction and set the y value manually to add height and impact to this hit.
-            Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
+            Vector2 normalizedHitDirection = 
+                (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized; 
             normalizedHitDirection.y = 0.66f;
 
             // Push the player back by this normalized hit direction as an impulse force.
             // ANOMALY: Huge horizontal force is also added when the player is directly next to the enemy as he uses this ability. Likely
-            // due to collision wackiness from the player being directly inside the ability hitbox. Might fix but is overall low priority
-            // due to player being very unlikely to be that close to the enemy (When the ability is used) in actual gameplay.
-            col.gameObject.GetComponent<Rigidbody2D>().AddForce(7 * normalizedHitDirection, ForceMode2D.Impulse);
-            EliteAbility.StopAbility(this.gameObject);
+            // due to collision wackiness from the player being directly inside the ability hitbox.
+            col.gameObject.GetComponent<Rigidbody2D>()
+                .AddForce(7 * normalizedHitDirection, ForceMode2D.Impulse);
+
+                EliteAbility.StopAbility(this.gameObject);
         }
-        
+    }
+
         // Enemy itself hits the player
         else if (col.gameObject.tag == "Player")
         {

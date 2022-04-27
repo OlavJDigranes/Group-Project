@@ -20,20 +20,11 @@ using UnityEngine;
 /// Note: The player MUST have the tag "Player".
 /// Additionally, the player's weapon object must have the tag "PlayerAttack"
 /// </summary>
-public class CommonEnemy : MonoBehaviour
+public class CommonEnemy : Enemy
 {
     // Monster level, used to scale the monster's damage and health.
     [SerializeField]
     private int monsterLevel;
-
-    // Monster drops
-    private int expOnDeath;
-    private int goldOnDeath;
-
-    // Generic monster stats: damage health and movement speed.
-    private int contactDamage;
-    private int health;
-    private int moveSpeed;
 
     // Bool that determines what way the monster is facing, managed by the monster.
     private bool facingRight = false;
@@ -52,7 +43,7 @@ public class CommonEnemy : MonoBehaviour
     /// <summary>
     /// Runs first and once on scene start.
     /// </summary>
-    public void Start()
+    public override void Start()
     {
         // Bounding box dimensions are initialized. Note that the x component is halved due to .size returning
         // the total width and length of the collision box, while we only want to find the distance between the centre and edge (half).
@@ -76,7 +67,7 @@ public class CommonEnemy : MonoBehaviour
     /// <summary>
     /// Runs once per frame after start.
     /// </summary>
-    public void Update()
+    public override void Update()
     {
         // Update the platform check timer by dt.
         platformCheckTimer = -Time.deltaTime;
