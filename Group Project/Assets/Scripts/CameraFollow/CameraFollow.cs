@@ -7,7 +7,7 @@ public class CameraFollow : MonoBehaviour
     public Vector3 offset;
 
     // Didn't know this existed, LateUpdate runs AFTER any Update method.
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         // Get the target's position (add any offsets if needed) and save it to a vector3 var
         Vector3 desiredPosition = target.position + offset;
