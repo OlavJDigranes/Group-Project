@@ -25,9 +25,6 @@ public class BossEnemy : Enemy
     // Movement script, will be set to aggressive.
     private Movement EliteMovement;
 
-    // Used only for the projectile ability;
-    private bool timedAbilty = false;
-
     // Keep track of the position of the player. May be integrated into an enemy manager class for efficiency later on, but this'll do.
     private Vector2 playerPosition;
 
@@ -133,22 +130,22 @@ public class BossEnemy : Enemy
         {
 
             // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
-            if (bossAbilities[i].cooldown < 0.0 && bossAbilities[i].CheckAbilityUsage(transform.position, playerPosition))
+            if (bossAbilities[i].GetCooldown() < 0.0 && bossAbilities[i].CheckAbilityUsage(transform.position, playerPosition))
             {
                 // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
                 bossAbilities[i].UseAbility(gameObject, facingRight);
             }
 
             // Decrement the ability cooldown by dt.
-            bossAbilities[i].cooldown -= Time.deltaTime;
+            bossAbilities[i].UpdateCooldown(Time.deltaTime);
 
             // If the elite ability relies on a after-use timer, decrement it by dt.
             // Once this timer hits 0, run another function to finish/despawn the attack.
-            if (timedAbilty)
+            if (bossAbilities[i].HasDuration())
             {
-                bossAbilities[i].duration -= Time.deltaTime;
+                bossAbilities[i].UpdateDuration(Time.deltaTime);
 
-                if (bossAbilities[i].duration <= 0.0f)
+                if (bossAbilities[i].GetDuration() <= 0.0f)
                 {
                     bossAbilities[i].StopAbility(gameObject);
                 }
@@ -173,9 +170,9 @@ public class BossEnemy : Enemy
         if (col.gameObject.tag == "Player")
         {
             Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
-            normalizedHitDirection.y = 0.4f;
+            normalizedHitDirection.y = 0.6f;
 
-            col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
+            col.gameObject.GetComponent<Rigidbody2D>().AddForce(5 * normalizedHitDirection, ForceMode2D.Impulse);
         }
 
         // Collision with any object labelled "Floor" (Which should be the tag set for all walkable surfaces in the game): allow enemy to jump again if he is walking on the floor

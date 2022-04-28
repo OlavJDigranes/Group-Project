@@ -166,22 +166,22 @@ public class EliteEnemy : Enemy
             }
 
             // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
-            if ( EliteAbility.cooldown < 0.0 && EliteAbility.CheckAbilityUsage(transform.position, playerPosition))
+            if ( EliteAbility.GetCooldown() < 0.0 && EliteAbility.CheckAbilityUsage(transform.position, playerPosition))
             {
                 // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
                 EliteAbility.UseAbility(gameObject, facingRight);
             }
 
             // Decrement the ability cooldown by dt.
-            EliteAbility.cooldown -= Time.deltaTime;
+            EliteAbility.UpdateCooldown(Time.deltaTime);
 
             // If the elite ability relies on a after-use timer, decrement it by dt.
             // Once this timer hits 0, run another function to finish/despawn the attack.
-            if (EliteAbility.hasDuration)
+            if (EliteAbility.HasDuration())
             {
-                EliteAbility.duration -= Time.deltaTime;
+                EliteAbility.UpdateDuration(Time.deltaTime);
 
-                if (EliteAbility.duration <= 0.0f)
+                if (EliteAbility.GetDuration() <= 0.0f)
                 {
                     EliteAbility.StopAbility(gameObject);
                 }

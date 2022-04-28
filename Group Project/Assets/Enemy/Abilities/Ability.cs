@@ -22,6 +22,14 @@ public abstract class Ability : MonoBehaviour
     protected bool hasDuration;
 
     public int GetDamage() { return damage; }
+    public float GetCooldown () { return cooldown; }
+    public float GetDuration() { return duration; }
+    public bool HasDuration() { return hasDuration; }
+
+
+    public void UpdateDuration(float dt) { duration -= dt; }
+    public void UpdateCooldown(float dt) { cooldown -= dt; }
+
 
     /// <summary>
     /// Virtual method that makes the enemy use it's ability.
