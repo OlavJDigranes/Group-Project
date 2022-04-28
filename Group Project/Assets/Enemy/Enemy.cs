@@ -5,13 +5,13 @@ using UnityEngine;
 public abstract class Enemy : MonoBehaviour
 {
     // Generic enemy stats
-    public int health;
-    public int contactDamage;
-    public int moveSpeed;
+    protected int health;
+    protected int contactDamage;
+    protected int moveSpeed;
 
     // Generic enemy drops
-    public float expOnDeath;
-    public float goldOnDeath;
+    protected float expOnDeath;
+    protected float goldOnDeath;
 
     // Start is called before the first frame update
     public virtual void Start() {}
@@ -37,14 +37,14 @@ public abstract class Enemy : MonoBehaviour
         // Elite enemy, who has one ability.
         else
         {
-            return gameObject.GetComponent<Ability>().damage;
+            return gameObject.GetComponent<Ability>().GetDamage();
         }
     }
     
     // Same as get ability damage but retrieves the damage for a specific ability.
     public float GetBossAbilityDamage(int i)
     {
-        return gameObject.GetComponents<Ability>()[i].damage;
+        return gameObject.GetComponents<Ability>()[i].GetDamage();
     }
 
     // Called when enemy health is 0 or less.

@@ -11,10 +11,7 @@ using Vector2 = UnityEngine.Vector2;
 // --> SOUNDS
 // --> (Multiple? ABILITIES)
 //     --> THROW ROCK
-// --> CHASE BEHAVIOUR (Reuse elite movement).
 // --> COLLISIONS WITH
-//     --> PLAYER
-//     --> ENVIRONMENT
 //     --> IT'S OWN PROJECTILE
 // --> OTHER COMPLICATIONS THAT WILL TRIP ME UP
 public class BossEnemy : Enemy
@@ -23,10 +20,7 @@ public class BossEnemy : Enemy
 
     // Boss abilities are predefined and cannot be changed.
     private List<Ability> bossAbilities = new List<Ability>();
-    public int BOSS_ABILITY_COUNT;
-
-    // Hitbox of the bash ability, set to null initially for cases where the enemy has a different ability, otherwise it will be set to the component.
-    private BoxCollider2D bashHitBox = null;
+    private int BOSS_ABILITY_COUNT;
 
     // Movement script, will be set to aggressive.
     private Movement EliteMovement;
@@ -43,7 +37,7 @@ public class BossEnemy : Enemy
     private bool onGround;
 
     // Iterator for the ability updates, used to get the damage of a specific ability in use in the Enemy abstract class.
-    public int i = 0;
+    protected internal int i = 0;
 
     // Rigidbody component of the enemy
     private Rigidbody2D rb;
@@ -54,6 +48,8 @@ public class BossEnemy : Enemy
     // Start is called before the first frame update
     public override void Start()
     {
+        BOSS_ABILITY_COUNT = 0;
+
         // Init the facing direction of the enemy.
         facingRight = true;
 
@@ -76,23 +72,13 @@ public class BossEnemy : Enemy
         // Setup abilities and init
         EliteMovement = gameObject.AddComponent<AggressiveMovement>();
         EliteMovement.Init(moveSpeed);
-        gameObject.AddComponent<DashAbility>();
-       // bossAbilities.Add(gameObject.AddComponent<DashAbility>());
-        bossAbilities.Add(gameObject.AddComponent<BashAbility>());
 
-        // Init abilities
+        bossAbilities.Add(gameObject.AddComponent<DashAbility>());
+       // Init abilities
         foreach (Ability a in bossAbilities)
         {
             a.Init(bossLevel);
-
-            // If the enemy has the bash ability, give it a hitbox to do the bash attack with. Also set it's size to 0 so that it doesn't accidentally hit the player
-            // outside of ability use.
-            if (a.name == "Bash")
-            {
-                bashHitBox = gameObject.AddComponent<BoxCollider2D>();
-                bashHitBox.size = Vector2.zero;
-                bashHitBox.name = "Bash";
-            }
+            BOSS_ABILITY_COUNT++;
         }
     }
 
@@ -200,26 +186,6 @@ public class BossEnemy : Enemy
                  col.gameObject.transform.position.y < gameObject.transform.position.y)
         {
             onGround = true;
-        }
-
-        // Shield bash hits player: Only runs if the hit box actually exists/the enemy has the bash ability.
-        else if (bashHitBox != null)
-        {
-            if (bashHitBox.IsTouching(GameObject.Find("Player").gameObject.GetComponent<BoxCollider2D>()))
-            {
-                // Get the normalized hit direction and set the y value manually to add height and impact to this hit.
-                Vector2 normalizedHitDirection =
-                    (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
-                normalizedHitDirection.y = 0.66f;
-
-                // Push the player back by this normalized hit direction as an impulse force.
-                // ANOMALY: Huge horizontal force is also added when the player is directly next to the enemy as he uses this ability. Likely
-                // due to collision wackiness from the player being directly inside the ability hitbox.
-                col.gameObject.GetComponent<Rigidbody2D>()
-                    .AddForce(7 * normalizedHitDirection, ForceMode2D.Impulse);
-
-                GetComponent<BashAbility>().StopAbility(gameObject);
-            }
         }
     }
 }

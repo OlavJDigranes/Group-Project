@@ -10,16 +10,18 @@ using UnityEngine.InputSystem.LowLevel;
 public abstract class Ability : MonoBehaviour
 {
     // Damage inflicted by this ability.
-    public int damage;
+    protected int damage;
 
     // Cooldown timer thats triggered on ability use.
-    public float cooldown;
+    protected float cooldown;
 
     // Duration of the ability.
-    public float duration;
+    protected float duration;
 
     // Easy, readable method of determining if the ability has a duration.
-    public bool hasDuration;
+    protected bool hasDuration;
+
+    public int GetDamage() { return damage; }
 
     /// <summary>
     /// Virtual method that makes the enemy use it's ability.

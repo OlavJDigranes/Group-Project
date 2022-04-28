@@ -17,7 +17,7 @@ using Vector2 = UnityEngine.Vector2;
 public class EliteEnemy : Enemy
 {
     // Monster level, used to scale the monster's damage and health.
-    [SerializeField] private int monsterLevel;
+    [SerializeField] public int monsterLevel;
 
     // List of abilities elite enemies can have.
     public enum ABILITYNAME
