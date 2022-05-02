@@ -2,37 +2,36 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.UIElements;
+using Vector2 = UnityEngine.Vector2;
 
 //todo checklist:
-// -> Abilities for enemies (such as projectiles, teleportation, summoning enemies, speed/power enhancements..).
-// -> Enemy movement:
-// ->   -> Collision with the platforms.
-// ->   -> "AI" (Aggressive: chase the player, Defensive: Keep distance from the player).
-// ->   -> Jumping
-// -> Melee enemies (animated weapon attack or on-touch damage?)
+// -> Abilities for enemies (such as projectiles, teleportation, summoning enemies, speed/power enhancements..). // Melee abilities done \\
 // -> Ranged enemies
-// -> Collision triggers with player attacks
-// -> Damaging the player on collision (+ Separate damage when using their ability).
 
 public class EliteEnemy : MonoBehaviour
 {
     // Monster level, used to scale the monster's damage and health.
-    [SerializeField]
-    private int monsterLevel;
+    [SerializeField] private int monsterLevel;
 
-    // Attack type, which dictates how the enemy attacks the player (Melee - 0; Attack with melee attacks of any kind, Ranged - 1; Attack from afar with projectiles ).
-    [SerializeField]
-    private int AttackType;
+    // List of abilities elite enemies can have.
+    public enum ABILITYNAME
+    {
+        // MELEE ABILITIES
+        DASH, // Aggressive dash.
+        BASH // Aggressive with a high-knockback attack.
+    };
 
-    // AI type, which dictates how the enemy moves in relation to the player (Aggressive - 0; charge for the player, Defensive - 1; keep their distance).
-    [SerializeField]
-    private int AIType;
+    // Retrieve ability selected for this enemy.
+    [SerializeField] public ABILITYNAME abilityName;
 
-    // Monster drops
+
+// Monster drops
     private int expOnDeath;
     private int goldOnDeath;
 
@@ -54,14 +53,13 @@ public class EliteEnemy : MonoBehaviour
     // Hitbox of the bash ability, set to null initially for cases where the enemy has a different ability, otherwise it will be set to the component.
     private BoxCollider2D bashHitBox = null;
 
-
     // Boolean that determines if an ability hit the player, used for certain abilities to ensure that it only interacts with the player
     // once per ability usage (to prevent multiple hits at once).
     private bool abilityHitPlayer = false;
 
+
     // Keep track of the position of the player. May be integrated into an enemy manager class for efficiency later on, but this'll do.
     private Vector2 playerPosition;
-
 
     // Boolean to determine which way the enemy is facing.
     private bool facingRight = false;
@@ -74,6 +72,9 @@ public class EliteEnemy : MonoBehaviour
 
     // Enemy width * 0.5 (Used to set the start position for the ray cast for obstacle detection).
     private float enemyHalfWidth;
+
+    // Enemy does nothing when not in use. Once an enemy activates, it can never be de-activated again.
+    private bool active = false;
 
 
     // Start is called before the first frame update
@@ -98,58 +99,25 @@ public class EliteEnemy : MonoBehaviour
 
         enemyHalfWidth = gameObject.GetComponent<BoxCollider2D>().bounds.size.x * 0.5f;
 
-        // Determine the ability the enemy should use based on it's attack type and AI type.
-        // Uses a nested switch statement to handle this.
-        switch (AIType)
+        // Read the input ability name and setup the corresponding ability script.
+        switch (abilityName)
         {
-            // Aggressive Enemy
-            case 0:
-                switch (AttackType)
-                {
-                    // Melee aggressive enemy
-                    case 0:
-                        EliteAbility = gameObject.AddComponent<DashAbility>();
-                        EliteAbility.Init(monsterLevel);
-                        break;
-
-                    // Ranged defensive enemy
-                    case 1:
-                        // Some ability...
-                        break;
-
-                    default:
-                        Debug.Log("Error: invalid AI type value was assigned for this enemy.");
-                        break;
-                }
+            // Dash
+            case ABILITYNAME.DASH:
+                EliteAbility = gameObject.AddComponent<DashAbility>();
                 EliteMovement = gameObject.AddComponent<AggressiveMovement>();
-                EliteMovement.Init(moveSpeed);
                 break;
 
-            // Defensive Enemy
-            case 1:
-                switch (AttackType)
-                {
-                    // Melee defensive enemy
-                    case 0:
-                        EliteAbility = gameObject.AddComponent<BashAbility>();
-                        EliteAbility.Init(monsterLevel);
-                        bashHitBox = gameObject.AddComponent<BoxCollider2D>();
-                        timedAbilty = true;
-                        EliteAbility.duration = 999.0f;
-                        break;
-
-                    // Ranged defensive enemy
-                    case 1:
-                        // Another ability...
-                        break;
-
-                    default:
-                        Debug.Log("Error: Invalid attack type value was assigned for this enemy.");
-                        break;
-                }
-                // Attach defensive movement component script.
+            // Bash
+            case ABILITYNAME.BASH:
+                EliteAbility = gameObject.AddComponent<DashAbility>();
+                EliteMovement = gameObject.AddComponent<AggressiveMovement>();
                 break;
         }
+
+        // Call init functions for movement and ability.
+        EliteAbility.Init(monsterLevel);
+        EliteMovement.Init(moveSpeed);
     }
 
     // Update is called once per frame
@@ -158,69 +126,80 @@ public class EliteEnemy : MonoBehaviour
         // Get player position
         playerPosition = GameObject.Find("Player").transform.position;
 
-        // Update enemy's facing direction in relation to the player.
-        facingRight = EliteMovement.FaceTowardsPlayer(transform.position, playerPosition);
+        // If asleep, check if player moved close enough to the enemy to activate/wake up the enemy.
+        // Enemy will begin to attack the player when the player is around 35 metres away from it.
+        if (!active && Vector2.Distance(playerPosition, (Vector2)transform.position) < 35) { active = true; }
 
-        // Move the enemy.
-        EliteMovement.Move(gameObject, facingRight);
-
-        // Enemy will jump when 3 conditions are satisfied:
-        // - He is on the ground (onGround == true)
-        // - The player is close enough to the enemy (Horizontal distance between enemy and player <= 5 units).
-        // - The player is at least 2 units above the enemy (Player is high enough that the enemy will consider jumping to inflict contact damage).
-        if (Mathf.Abs(transform.position.x - playerPosition.x) <= 5 && onGround && transform.position.y < playerPosition.y - 2)
+        // Enemy is awake, and so it's update function will run.
+        if(active)
         {
-            EliteMovement.Jump(gameObject);
-            onGround = false;
-        }
 
+            // Update enemy's facing direction in relation to the player.
+            facingRight = EliteMovement.FaceTowardsPlayer(transform.position, playerPosition);
 
-        // Second check for jumping: If the enemy needs to jump over an obstacle.
-        // ANOMALIES:
-        //   - This is not pathfinding. The enemy can and will get trapped inside structures unless intentionally lured out.
-        //   - Because of the function that checks if the enemy is able to jump again, the enemy may sometimes jump multiple times to jump over the obstacle, resulting in a huge
-        // burst of vertical speed.
-        RaycastHit2D hitCheck = Physics2D.Raycast((Vector2)transform.position + new Vector2(enemyHalfWidth, 0), 
-                                         (facingRight) ? Vector2.right : Vector2.left,
-                                         0.8f);
+            // Move the enemy.
+            EliteMovement.Move(gameObject, facingRight);
 
-        // Enemy will jump over obstacles when 3 conditions are satisfied:
-        // -  If the collider is not null (This is more done due to a nullReferenceException error when trying to access a non-existent collider).
-        // - The collider has identified the tag as "Floor".
-        // - Enemy is currently on the ground.
-        {
-            if (hitCheck.collider && hitCheck.collider.gameObject.tag == "Floor" && onGround)
+            // Enemy will jump when 3 conditions are satisfied:
+            // - He is on the ground (onGround == true)
+            // - The player is close enough to the enemy (Horizontal distance between enemy and player <= 5 units).
+            // - The player is at least 2 units above the enemy (Player is high enough that the enemy will consider jumping to inflict contact damage).
+            if (Mathf.Abs(transform.position.x - playerPosition.x) <= 5 && onGround &&
+                transform.position.y < playerPosition.y - 2)
             {
                 EliteMovement.Jump(gameObject);
                 onGround = false;
             }
-        }
 
-        // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
-        if (EliteAbility.CheckAbilityUsage(transform.position, playerPosition, EliteAbility.cooldown))
-        {
-            // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
-            EliteAbility.UseAbility(gameObject, facingRight);
-        }
-        // Decrement the ability cooldown by dt.
-        EliteAbility.cooldown -= Time.deltaTime;
 
-        // If the elite ability relies on a after-use timer, decrement it by dt.
-        // Once this timer hits 0, run another function to finish/despawn the attack.
-        if (timedAbilty)
-        {
-            EliteAbility.duration -= Time.deltaTime;
+            // Second check for jumping: If the enemy needs to jump over an obstacle.
+            // ANOMALIES:
+            //   - This is not pathfinding. The enemy can and will get trapped inside structures unless intentionally lured out.
+            //   - Because of the function that checks if the enemy is able to jump again, the enemy may sometimes jump multiple times to jump over the obstacle, resulting in a huge
+            // burst of vertical speed.
+            RaycastHit2D hitCheck = Physics2D.Raycast((Vector2) transform.position + new Vector2(enemyHalfWidth, 0),
+                (facingRight) ? Vector2.right : Vector2.left,
+                0.8f);
 
-            if (EliteAbility.duration <= 0.0f)
+            // Enemy will jump over obstacles when 3 conditions are satisfied:
+            // -  If the collider is not null (This is more done due to a nullReferenceException error when trying to access a non-existent collider).
+            // - The collider has identified the tag as "Floor".
+            // - Enemy is currently on the ground.
             {
-                EliteAbility.StopAbility(gameObject);
-                abilityHitPlayer = false;
+                if (hitCheck.collider && hitCheck.collider.gameObject.tag == "Floor" && onGround)
+                {
+                    EliteMovement.Jump(gameObject);
+                    onGround = false;
+                }
             }
+
+            // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
+            if (EliteAbility.CheckAbilityUsage(transform.position, playerPosition, EliteAbility.cooldown))
+            {
+                // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
+                EliteAbility.UseAbility(gameObject, facingRight);
+            }
+
+            // Decrement the ability cooldown by dt.
+            EliteAbility.cooldown -= Time.deltaTime;
+
+            // If the elite ability relies on a after-use timer, decrement it by dt.
+            // Once this timer hits 0, run another function to finish/despawn the attack.
+            if (timedAbilty)
+            {
+                EliteAbility.duration -= Time.deltaTime;
+
+                if (EliteAbility.duration <= 0.0f)
+                {
+                    EliteAbility.StopAbility(gameObject);
+                    abilityHitPlayer = false;
+                }
+            }
+
+            // Custom implementation of gravity. This is due to the enemy's linear drag being set to 5 to offset the incredible speed burst from dash attacks.
+            // Linear drag massively slows down the acceleration of the enemy while falling, so this counters this slowdown for more realistic falling.
+            rb.AddForce(new Vector2(0, -9.81f));
         }
-        
-        // Custom implementation of gravity. This is due to the enemy's linear drag being set to 5 to offset the incredible speed burst from dash attacks.
-        // Linear drag massively slows down the acceleration of the enemy while falling, so this counters this slowdown for more realistic falling.
-        rb.AddForce(new Vector2(0, -9.81f));
     }
 
     /// <summary>
