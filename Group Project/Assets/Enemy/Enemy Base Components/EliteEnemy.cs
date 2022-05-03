@@ -239,5 +239,10 @@ public class EliteEnemy : Enemy
             normalizedHitDirection.y = 0.4f;
             col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
         }
+
+        if (col.gameObject.tag != "Player" && col.gameObject.tag != "Floor")
+        {
+            Physics2D.IgnoreCollision(col.collider, transform.GetComponent<BoxCollider2D>());
+        }
     }
 }

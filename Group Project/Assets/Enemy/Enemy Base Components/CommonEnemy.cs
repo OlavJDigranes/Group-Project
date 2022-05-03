@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TreeEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 // todo Checklist:
 // -> Animated sprites (Walking, Hurt, Dead) : Actual sprites unavailable for now, can be implemented once sprite is acquired.
@@ -106,5 +107,13 @@ public class CommonEnemy : Enemy
             boundBox.x *= -1.0f;
         }
 
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag != "Player" && col.gameObject.tag != "Floor")
+        {
+            Physics2D.IgnoreCollision(col.collider, transform.GetComponent<BoxCollider2D>());
+        }
     }
 }
