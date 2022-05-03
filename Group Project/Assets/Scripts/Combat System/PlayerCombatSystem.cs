@@ -19,10 +19,15 @@ public class PlayerCombatSystem : MonoBehaviour
     private InputAction ultimateAttack;
     private InputAction directionCheck;
 
+    // Prefabs
+    public GameObject PParticles;
+    public GameObject SParticles;
+    public GameObject UParticles;
+
     private void Awake()
     {
         // Assign AttackPoint
-        attackPoint = gameObject.transform.GetChild(0).gameObject.GetComponent<Transform>();
+        attackPoint = gameObject.transform.GetChild(1).gameObject.GetComponent<Transform>();
 
         playerInput = GetComponent<PlayerInput>();
 
@@ -71,7 +76,8 @@ public class PlayerCombatSystem : MonoBehaviour
             attackPoint.position = new Vector2(gameObject.transform.position.x + -1f, attackPoint.position.y);
         }
 
-        Attack(10);
+        Instantiate(PParticles, attackPoint.transform);
+        Attack(25);
     }
 
     public void SecondaryCast(InputAction.CallbackContext obj)
@@ -87,7 +93,8 @@ public class PlayerCombatSystem : MonoBehaviour
             attackPoint.position = new Vector2(gameObject.transform.position.x + -2f, attackPoint.position.y);
         }
 
-        Attack(8);
+        Instantiate(SParticles, attackPoint.transform);
+        Attack(15);
     }
 
     public void UltimateCast(InputAction.CallbackContext obj)
@@ -125,6 +132,18 @@ public class PlayerCombatSystem : MonoBehaviour
             // Show the enemy HP
             Debug.Log(hitEnemy.collider.name + "'s Health: " + hitEnemy.collider.GetComponent<CommonEnemy>().getHealth());
 
+        }
+        if(facingRight)
+        {
+            attackPoint.position = new Vector2(gameObject.transform.position.x + 1f, attackPoint.position.y);
+            UParticles.transform.rotation = Quaternion.Euler(0, 90, -90);
+            Instantiate(UParticles, attackPoint.transform);
+        }
+        else
+        {
+            attackPoint.position = new Vector2(gameObject.transform.position.x + -1f, attackPoint.position.y);
+            UParticles.transform.rotation = Quaternion.Euler(180, 90, -90);
+            Instantiate(UParticles, attackPoint.transform);
         }
     }
 
