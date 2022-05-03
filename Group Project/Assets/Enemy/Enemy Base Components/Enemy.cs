@@ -7,7 +7,7 @@ public abstract class Enemy : MonoBehaviour
     // Generic enemy stats
     protected int health;
     protected int contactDamage;
-    protected int moveSpeed;
+    protected float moveSpeed;
 
     // Generic enemy drops
     protected float expOnDeath;

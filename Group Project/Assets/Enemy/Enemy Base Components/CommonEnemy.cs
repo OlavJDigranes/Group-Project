@@ -37,6 +37,9 @@ public class CommonEnemy : Enemy
     // Rigidbody component
     private Rigidbody2D rb;
 
+    // Animator component
+    private Animator ani;
+
 
     /// <summary>
     /// Runs first and once on scene start.
@@ -47,6 +50,8 @@ public class CommonEnemy : Enemy
         // the total width and length of the collision box, while we only want to find the distance between the centre and edge (half).
         boundBox = GetComponent<BoxCollider2D>().bounds.size;
         boundBox.x *= 0.5f;
+
+        ani = GetComponent<Animator>();
 
         // Get rigidbody component
         rb = GetComponent<Rigidbody2D>();
@@ -59,7 +64,7 @@ public class CommonEnemy : Enemy
         expOnDeath = monsterLevel * 50;
         goldOnDeath = monsterLevel * 10;
 
-        moveSpeed = 5;
+        moveSpeed = 1f;
     }
 
     /// <summary>
@@ -80,7 +85,6 @@ public class CommonEnemy : Enemy
 
         // Move the monster by the calculated offset vector.
         transform.Translate(movement);
-
     }
 
     /// <summary>
@@ -97,7 +101,7 @@ public class CommonEnemy : Enemy
 
         // Generate a raycast from the bottom corner of the monster's collision box (For x value, this is also the corner that the monster is moving/facing).
         // to a position 0.05 units down from it.
-        RaycastHit2D hitCheck = Physics2D.Raycast((Vector2) transform.position - boundBox, Vector2.down, 0.05f);
+        RaycastHit2D hitCheck = Physics2D.Raycast((Vector2) transform.position - boundBox, Vector2.down, 0.00005f);
 
         // If the raycast does not detect any collisions, then the monster is about to move off the platform. So, reverse it's direction and
         // swap the raycast x position from one side of the collision box to the other.
@@ -105,6 +109,16 @@ public class CommonEnemy : Enemy
         {
             facingRight = !facingRight;
             boundBox.x *= -1.0f;
+            if (facingRight)
+            {
+                ani.enabled = false;
+                ani.enabled = true;
+                ani.Play("walkRight 0", 0);
+            }
+            else
+            {
+                ani.Play("walkLeft 0", 0);
+            }
         }
 
     }

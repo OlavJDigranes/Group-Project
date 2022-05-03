@@ -41,7 +41,7 @@ public sealed class BashAbility : Ability
         dashForceMultiplier = 15;
 
         // Set duration to dummy value to prevent it triggering (Hitting 0.0) outside the function that activates the ability.
-        duration = 999.0f;
+        duration = 999;
 
         hasDuration = true;
     }
@@ -59,11 +59,11 @@ public sealed class BashAbility : Ability
             BoxCollider2D bashCollider = eliteEnemy.GetComponents<BoxCollider2D>().Last();
 
             // Push out the hitbox to the direction of travel infront of the enemy, essentially the enemy attacking in that direction.
-            bashCollider.size = new Vector2(0.75f, 0.5f);
-            bashCollider.offset = new Vector2((facingRight) ? 0.5f : -0.5f , 0);
+            bashCollider.size = new Vector2(0.3f, 0.2f);
+            bashCollider.offset = new Vector2((facingRight) ? 0.2f : -0.2f , 0);
 
-            // Set duration to 1.0f, where after one second the hitbox will be shrunk and unusable again.
-            duration = 1.0f;
+            // Set duration to 0.33f.
+            duration = 0.33f;
 
             // Generate the impulse force for the mini dash used with this ability.
             Vector2 dashImpulse = ((facingRight) ? Vector2.right : Vector2.left) * dashForceMultiplier;

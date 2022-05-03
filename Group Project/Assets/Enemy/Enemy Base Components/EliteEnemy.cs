@@ -57,6 +57,8 @@ public class EliteEnemy : Enemy
     // Enemy does nothing when not in use. Once an enemy activates, it can never be de-activated again.
     private bool active = false;
 
+    private Animator ani;
+
 
     // Start is called before the first frame update
     public override void Start()
@@ -73,12 +75,14 @@ public class EliteEnemy : Enemy
         expOnDeath = 50 + monsterLevel * 100;
         goldOnDeath = monsterLevel * 50;
 
-        moveSpeed = 3;
+        moveSpeed = 2f;
 
         // Get rigidbody component and calculate + store the half-width of the enemy.
         rb = gameObject.GetComponent<Rigidbody2D>();
 
         enemyHalfWidth = gameObject.GetComponent<BoxCollider2D>().bounds.size.x * 0.5f;
+
+        ani = gameObject.GetComponent<Animator>();
 
         // Read the input ability name and setup the corresponding ability script.
         switch (abilityName)
@@ -151,7 +155,7 @@ public class EliteEnemy : Enemy
             // burst of vertical speed. This can be alleviated by having straight, axis-aligned terrain.
             RaycastHit2D hitCheck = Physics2D.Raycast((Vector2) transform.position + new Vector2(enemyHalfWidth, 0),
                 (facingRight) ? Vector2.right : Vector2.left,
-                0.8f);
+                0.5f);
 
             // Enemy will jump over obstacles when 3 conditions are satisfied:
             // -  If the collider is not null (This is more done due to a nullReferenceException error when trying to access a non-existent collider).
@@ -168,13 +172,13 @@ public class EliteEnemy : Enemy
             // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
             if ( EliteAbility.GetCooldown() < 0.0 && EliteAbility.CheckAbilityUsage(transform.position, playerPosition))
             {
+                ani.Play("attackRight", 0);
                 // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
                 EliteAbility.UseAbility(gameObject, facingRight);
             }
 
             // Decrement the ability cooldown by dt.
             EliteAbility.UpdateCooldown(Time.deltaTime);
-
             // If the elite ability relies on a after-use timer, decrement it by dt.
             // Once this timer hits 0, run another function to finish/despawn the attack.
             if (EliteAbility.HasDuration())
@@ -183,6 +187,7 @@ public class EliteEnemy : Enemy
 
                 if (EliteAbility.GetDuration() <= 0.0f)
                 {
+                    ani.Play("walkRight", 0);
                     EliteAbility.StopAbility(gameObject);
                 }
             }
@@ -220,16 +225,17 @@ public class EliteEnemy : Enemy
             // Get the normalized hit direction and set the y value manually to add height and impact to this hit.
             Vector2 normalizedHitDirection = 
                 (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized; 
-            normalizedHitDirection.y = 0.66f;
+            normalizedHitDirection.y = 0.7f;
 
             // Push the player back by this normalized hit direction as an impulse force.
             // ANOMALY: Huge horizontal force is also added when the player is directly next to the enemy as he uses this ability. Likely
             // due to collision wackiness from the player being directly inside the ability hitbox.
             col.gameObject.GetComponent<Rigidbody2D>()
-                .AddForce(7 * normalizedHitDirection, ForceMode2D.Impulse);
+                .AddForce(4 * normalizedHitDirection, ForceMode2D.Impulse);
 
                 EliteAbility.StopAbility(this.gameObject);
-        }
+                ani.Play("walkRight", 0);
+            }
     }
 
         // Enemy itself hits the player
@@ -237,12 +243,7 @@ public class EliteEnemy : Enemy
         {
             Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
             normalizedHitDirection.y = 0.4f;
-            col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
-        }
-
-        if (col.gameObject.tag != "Player" && col.gameObject.tag != "Floor")
-        {
-            Physics2D.IgnoreCollision(col.collider, transform.GetComponent<BoxCollider2D>());
+            col.gameObject.GetComponent<Rigidbody2D>().AddForce(2 * normalizedHitDirection, ForceMode2D.Impulse);
         }
     }
 }

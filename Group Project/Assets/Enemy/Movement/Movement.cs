@@ -14,7 +14,7 @@ public abstract class Movement : MonoBehaviour
     /// Init the enemy's movement speed to be used in the movement function
     /// </summary>
     /// <param name="enemyMoveSpeed">Enemy's movement speed</param>
-    public void Init(int enemyMoveSpeed)
+    public void Init(float enemyMoveSpeed)
     {
         moveSpeed = enemyMoveSpeed;
     }
@@ -40,6 +40,6 @@ public abstract class Movement : MonoBehaviour
     /// Very rarely though due to both events needing to trigger at nearly the same time.
     /// </summary>
     /// <param name="eliteEnemy">Enemy object.</param>
-    public void Jump(GameObject eliteEnemy)  { eliteEnemy.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, moveSpeed * 10), ForceMode2D.Impulse); }
+    public void Jump(GameObject eliteEnemy)  { eliteEnemy.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, moveSpeed * 9), ForceMode2D.Impulse); }
 
 }
