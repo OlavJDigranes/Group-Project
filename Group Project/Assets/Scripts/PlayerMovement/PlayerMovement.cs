@@ -47,6 +47,8 @@ public class PlayerMovement : MonoBehaviour
 
     // Camera
     private Camera cam;
+    private float yAdj_jump = 0;
+    private float lerpTime = 0;
 
     //Process components needed for functions
     private void Awake()
@@ -79,7 +81,10 @@ public class PlayerMovement : MonoBehaviour
         //jumpAction.canceled += handleJump; --- Might need this later? Hold to climb on contextual surfaces or something (Rory)
         crouchAction.performed += handleCrouch;
         crouchAction.canceled += handleCrouch;
-        cam = gameObject.transform.GetChild(0).GetComponentInChildren<Camera>();
+        if (gameObject.transform.GetChild(0).GetComponentInChildren<Camera>() != null)
+        {
+            cam = gameObject.transform.GetChild(0).GetComponentInChildren<Camera>();
+        }
     }
 
     private void handleDash(InputAction.CallbackContext obj)
@@ -108,6 +113,14 @@ public class PlayerMovement : MonoBehaviour
         {
             dashTimer += Time.deltaTime;
         }
+        if (hasJumped)
+        {
+            cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, 3 - (gameObject.transform.position.y - yAdj_jump) /2, cam.transform.localPosition.z);
+        }
+        else if (cam.transform.localPosition.y > 3)
+        {
+            cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, cam.transform.localPosition.y - Time.deltaTime, cam.transform.localPosition.z);
+        }
     }
 
     //Delegated jump event
@@ -119,13 +132,13 @@ public class PlayerMovement : MonoBehaviour
             if (!hasJumped)
             {
                 hasJumped = true;
+                yAdj_jump = gameObject.transform.position.y;
             }
             else if (!hasDoubleJumped)
             {
                 hasDoubleJumped = true;
             }
         }
-        print(cam.transform.position.y);
     }
 
     //Delegated walk event
