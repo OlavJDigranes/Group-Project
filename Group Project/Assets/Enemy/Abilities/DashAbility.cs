@@ -22,6 +22,8 @@ public sealed class DashAbility : Ability
     /// </summary>
     public override void Init(int monsterLevel)
     {
+        name = "Dash";
+
         // Damage is increased by the monster level doubled (Base 6 damage, per level increase = +2 damage).
         damage = 4 + (monsterLevel * 2);
 
@@ -34,6 +36,7 @@ public sealed class DashAbility : Ability
 
         // No duration
         duration = 0.0f;
+        hasDuration = false;
     }
 
     /// <summary>
@@ -58,13 +61,9 @@ public sealed class DashAbility : Ability
     /// </summary>
     /// <param name="eliteEnemyPosition">Position of the elite enemy. </param>
     /// <param name="playerPosition">Position of the player. </param>
-    /// <param name="cooldown">Current cooldown of the ability. </param>
-    /// <returns></returns>
-    public override bool CheckAbilityUsage(Vector2 eliteEnemyPosition, Vector2 playerPosition, float cooldown)
+    /// <returns>bool True = Ability will be used in this frame, False = Ability cannot/will not be used this frame.</returns>
+    public override bool CheckAbilityUsage(Vector2 eliteEnemyPosition, Vector2 playerPosition)
     {
-        // Ability can't be used if the cooldown has not expired yet.
-        if (cooldown > 0.0f) { return false; }
-
         // Get horizontal and vertical distances from the player to the enemy.
         float horizontalDistance = Mathf.Abs(eliteEnemyPosition.x - playerPosition.x);
         float verticalDistance = Mathf.Abs(eliteEnemyPosition.y - playerPosition.y);

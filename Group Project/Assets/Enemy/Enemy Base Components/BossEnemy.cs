@@ -11,38 +11,19 @@ using Vector2 = UnityEngine.Vector2;
 // --> SOUNDS
 // --> (Multiple? ABILITIES)
 //     --> THROW ROCK
-// --> CHASE BEHAVIOUR (Reuse elite movement).
 // --> COLLISIONS WITH
-//     --> PLAYER
-//     --> ENVIRONMENT
 //     --> IT'S OWN PROJECTILE
 // --> OTHER COMPLICATIONS THAT WILL TRIP ME UP
-public class BossEnemy : MonoBehaviour
+public class BossEnemy : Enemy
 {
     [SerializeField] private int bossLevel;
 
     // Boss abilities are predefined and cannot be changed.
     private List<Ability> bossAbilities = new List<Ability>();
+    private int BOSS_ABILITY_COUNT;
 
-    // Boss drops
-    private int expOnDeath;
-    private int goldOnDeath;
-
-    // Generic monster stats: damage health and movement speed.
-    private int contactDamage;
-    private int health;
-    private int moveSpeed;
-
-
-    // this'll be hell
-    public List<Ability> BossAbilities;
-    public int BOSS_ABILITY_COUNT;
-    
     // Movement script, will be set to aggressive.
     private Movement EliteMovement;
-
-    // Used only for the projectile ability;
-    private bool timedAbilty = false;
 
     // Keep track of the position of the player. May be integrated into an enemy manager class for efficiency later on, but this'll do.
     private Vector2 playerPosition;
@@ -52,6 +33,8 @@ public class BossEnemy : MonoBehaviour
     // Determines if enemy is touching the floor, used to determine if it is able to jump.
     private bool onGround;
 
+    // Iterator for the ability updates, used to get the damage of a specific ability in use in the Enemy abstract class.
+    protected internal int i = 0;
 
     // Rigidbody component of the enemy
     private Rigidbody2D rb;
@@ -60,9 +43,10 @@ public class BossEnemy : MonoBehaviour
     private float enemyHalfWidth;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        BOSS_ABILITY_COUNT = 2;
+        BOSS_ABILITY_COUNT = 0;
+
         // Init the facing direction of the enemy.
         facingRight = true;
 
@@ -85,14 +69,18 @@ public class BossEnemy : MonoBehaviour
         // Setup abilities and init
         EliteMovement = gameObject.AddComponent<AggressiveMovement>();
         EliteMovement.Init(moveSpeed);
-        gameObject.AddComponent<DashAbility>();
+
         bossAbilities.Add(gameObject.AddComponent<DashAbility>());
-        bossAbilities.Add(gameObject.AddComponent<BashAbility>());
-        foreach (Ability a in bossAbilities) { a.Init(bossLevel);}
+       // Init abilities
+        foreach (Ability a in bossAbilities)
+        {
+            a.Init(bossLevel);
+            BOSS_ABILITY_COUNT++;
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
         // Get player position
         playerPosition = GameObject.Find("Player").transform.position;
@@ -138,26 +126,26 @@ public class BossEnemy : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < BOSS_ABILITY_COUNT; i++)
+        for (i = 0; i < BOSS_ABILITY_COUNT; i++)
         {
 
             // Call the ability check function of the ability. If it returns true, the ability can be used, otherwise it won't be used, even if the cooldown has expired.
-            if (bossAbilities[i].CheckAbilityUsage(transform.position, playerPosition, bossAbilities[i].cooldown))
+            if (bossAbilities[i].GetCooldown() < 0.0 && bossAbilities[i].CheckAbilityUsage(transform.position, playerPosition))
             {
                 // Access the enemy's ability component and call it's attack function (which runs on a cooldown-based system)
                 bossAbilities[i].UseAbility(gameObject, facingRight);
             }
 
             // Decrement the ability cooldown by dt.
-            bossAbilities[i].cooldown -= Time.deltaTime;
+            bossAbilities[i].UpdateCooldown(Time.deltaTime);
 
             // If the elite ability relies on a after-use timer, decrement it by dt.
             // Once this timer hits 0, run another function to finish/despawn the attack.
-            if (timedAbilty)
+            if (bossAbilities[i].HasDuration())
             {
-                bossAbilities[i].duration -= Time.deltaTime;
+                bossAbilities[i].UpdateDuration(Time.deltaTime);
 
-                if (bossAbilities[i].duration <= 0.0f)
+                if (bossAbilities[i].GetDuration() <= 0.0f)
                 {
                     bossAbilities[i].StopAbility(gameObject);
                 }
@@ -182,10 +170,9 @@ public class BossEnemy : MonoBehaviour
         if (col.gameObject.tag == "Player")
         {
             Vector2 normalizedHitDirection = (col.gameObject.transform.position - col.otherCollider.gameObject.transform.position).normalized;
-            normalizedHitDirection.y = 0.4f;
+            normalizedHitDirection.y = 0.6f;
 
-            col.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-            col.gameObject.GetComponent<Rigidbody2D>().AddForce(3 * normalizedHitDirection, ForceMode2D.Impulse);
+            col.gameObject.GetComponent<Rigidbody2D>().AddForce(5 * normalizedHitDirection, ForceMode2D.Impulse);
         }
 
         // Collision with any object labelled "Floor" (Which should be the tag set for all walkable surfaces in the game): allow enemy to jump again if he is walking on the floor

@@ -13,10 +13,23 @@ public abstract class Ability : MonoBehaviour
     protected int damage;
 
     // Cooldown timer thats triggered on ability use.
-    public float cooldown;
+    protected float cooldown;
 
-    // Duration of the ability. (0.0 indicates no duration; ability is instantaneous or duration does not need to be measured).
-    public float duration;
+    // Duration of the ability.
+    protected float duration;
+
+    // Easy, readable method of determining if the ability has a duration.
+    protected bool hasDuration;
+
+    public int GetDamage() { return damage; }
+    public float GetCooldown () { return cooldown; }
+    public float GetDuration() { return duration; }
+    public bool HasDuration() { return hasDuration; }
+
+
+    public void UpdateDuration(float dt) { duration -= dt; }
+    public void UpdateCooldown(float dt) { cooldown -= dt; }
+
 
     /// <summary>
     /// Virtual method that makes the enemy use it's ability.
@@ -43,6 +56,5 @@ public abstract class Ability : MonoBehaviour
     /// </summary>
     /// <param name="eliteEnemyPosition">Position of the enemy. </param>
     /// <param name="playerPosition">Position of the player. </param>
-    /// <param name="cooldown">The current cooldown timer of the ability. </param>
-    public virtual bool CheckAbilityUsage(Vector2 eliteEnemyPosition, Vector2 playerPosition, float cooldown) {Debug.Log("Abstract ability check function called."); return false; }
+    public virtual bool CheckAbilityUsage(Vector2 eliteEnemyPosition, Vector2 playerPosition) {Debug.Log("Abstract ability check function called."); return false; }
 }
