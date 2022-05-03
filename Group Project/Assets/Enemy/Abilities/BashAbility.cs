@@ -19,8 +19,6 @@ public sealed class BashAbility : Ability
     // Stores the cooldown value, used to reset the cooldown after the ability was used.
     private float DefaultCooldown;
 
-    // Box collider of the attack.
-   private BoxCollider2D BashHitbox;
 
 
     /// <summary>

@@ -70,6 +70,7 @@ public class BossEnemy : Enemy
         EliteMovement = gameObject.AddComponent<AggressiveMovement>();
         EliteMovement.Init(moveSpeed);
 
+        bossAbilities.Add(gameObject.AddComponent<ProjectileAbility>());
         bossAbilities.Add(gameObject.AddComponent<DashAbility>());
        // Init abilities
         foreach (Ability a in bossAbilities)
@@ -179,7 +180,7 @@ public class BossEnemy : Enemy
         // ANOMALIES:
         //   - Enemy could "wall climb" by repeatedly running into a wall and jumping. (Can be fixed by also testing with a raycast, but it's a minor (and entertaining) bug.
         //   - Enemy does not lose onGround status when moving off a floating/tall platform, allowing it to jump in midair once.
-        else if (col.gameObject.tag == "Floor" &&
+        if (col.gameObject.tag == "Floor" &&
                  col.gameObject.transform.position.y < gameObject.transform.position.y)
         {
             onGround = true;
