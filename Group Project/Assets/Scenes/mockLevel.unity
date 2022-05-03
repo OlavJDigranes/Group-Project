@@ -4584,6 +4584,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Common Enemy (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4869517740501601636, guid: 22eeb4e4e7bdc4344bc058ca41e5be32, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22eeb4e4e7bdc4344bc058ca41e5be32, type: 3}
 --- !u!1001 &1678238452

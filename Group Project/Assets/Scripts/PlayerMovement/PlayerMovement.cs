@@ -113,13 +113,35 @@ public class PlayerMovement : MonoBehaviour
         {
             dashTimer += Time.deltaTime;
         }
-        if (hasJumped)
+        if (hasJumped && rb.velocity.y > 0)
         {
-            cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, 3 - (gameObject.transform.position.y - yAdj_jump) /2, cam.transform.localPosition.z);
+            if (lerpTime < 1)
+            {
+                lerpTime += Time.deltaTime;
+                cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, 3 - lerpTime, cam.transform.localPosition.z);
+            }
         }
-        else if (cam.transform.localPosition.y > 3)
+        if (rb.velocity.y <= 0 && lerpTime > 0)
         {
-            cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, cam.transform.localPosition.y - Time.deltaTime, cam.transform.localPosition.z);
+            lerpTime -= Time.deltaTime;
+            cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, 3 - lerpTime, cam.transform.localPosition.z);
+        }
+
+        Gizmos.color = Color.yellow;
+        float step = 0.2f;
+        float r = Mathf.Min(cc.size.x, cc.size.y) / 2;
+        float d = Mathf.Max(cc.size.x, cc.size.y) / 2 - r;
+        Vector3 lp = Vector3.positiveInfinity;
+        for (float a = -Mathf.PI; a <= Mathf.PI + step; a += step)
+        {
+            float x = Mathf.Cos(a);
+            float y = Mathf.Sin(a);
+            Vector3 np = new Vector3(x, y) * r;
+            np += (cc.direction == CapsuleDirection2D.Vertical ? Vector3.up : Vector3.zero) * d * Mathf.Sign(y);
+            np += (cc.direction == CapsuleDirection2D.Horizontal ? Vector3.right : Vector3.zero) * d * Mathf.Sign(x);
+            np = transform.TransformPoint(np);
+            if (lp != Vector3.positiveInfinity) Gizmos.DrawLine(lp, np);
+            lp = np;
         }
     }
 
@@ -206,14 +228,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        foreach (ContactPoint2D contact in collision.contacts)
+        if (hasJumped)
         {
-            //Debug.DrawLine(rb.position, contact.point, Color.green, 2f, true);
-            if (Vector2.Angle(Vector2.down, -contact.normal) <= 45)
+            foreach (ContactPoint2D contact in collision.contacts)
             {
-                hasJumped = false;
-                hasDoubleJumped = false;
-            }
+                //Debug.DrawLine(rb.position, contact.point, Color.green, 2f, true);
+                if (Vector2.Angle(Vector2.down, -contact.normal) <= 45)
+                {
+                    hasJumped = false;
+                    hasDoubleJumped = false;
+                }
+            } 
         }
     }
 }
