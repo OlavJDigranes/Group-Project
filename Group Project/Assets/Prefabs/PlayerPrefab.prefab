@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 5379274174316329871}
   - component: {fileID: 5173333560159563874}
   - component: {fileID: 5173333560159563879}
-  - component: {fileID: -6884961530837443855}
-  m_Layer: 3
+  - component: {fileID: 5527285148177053326}
+  - component: {fileID: 7108256264987407828}
+  m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +114,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 687d641a0ec64224a8c57b99b355d0de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -121,7 +122,7 @@ SpriteRenderer:
   m_Size: {x: 1.5, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &5173333560159563874
@@ -134,8 +135,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e21c1d5975a2ee42909618c6faa7f99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!114 &5173333560159563879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,8 +147,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Actions: {fileID: -944628639613478452, guid: a4467a9b435493a418baa540bb1fe4e2, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
@@ -166,7 +167,7 @@ MonoBehaviour:
   m_DefaultActionMap: Move Set 1
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &-6884961530837443855
+--- !u!114 &5527285148177053326
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,8 +177,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2014de09803a9cd4abae3dec7ecbeb71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
+  attackPoint: {fileID: 2531879767770733966}
+  attackRange: 0.5
   enemyMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
+--- !u!114 &7108256264987407828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847223407184843942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea06a3aa6486374399f429956e3e8fe, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
