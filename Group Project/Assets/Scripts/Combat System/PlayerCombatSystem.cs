@@ -117,13 +117,13 @@ public class PlayerCombatSystem : MonoBehaviour
             Debug.Log("Ult has hit " + hitEnemy.collider.name);
 
             // Get common enemy HP
-            int enemyHP = hitEnemy.collider.GetComponent<CommonEnemy>().health;
+            int enemyHP = hitEnemy.collider.GetComponent<CommonEnemy>().getHealth();
 
             // Update the enemy HP
-            hitEnemy.collider.GetComponent<CommonEnemy>().health = enemyHP - 50;
+            hitEnemy.collider.GetComponent<CommonEnemy>().setHealth(enemyHP - 50);
 
             // Show the enemy HP
-            Debug.Log(hitEnemy.collider.name + "'s Health: " + hitEnemy.collider.GetComponent<CommonEnemy>().health);
+            Debug.Log(hitEnemy.collider.name + "'s Health: " + hitEnemy.collider.GetComponent<CommonEnemy>().getHealth());
 
         }
     }
@@ -137,16 +137,16 @@ public class PlayerCombatSystem : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             // Get the enemies health
-            int enemyHP = enemy.GetComponent<CommonEnemy>().health;
+            int enemyHP = enemy.GetComponent<CommonEnemy>().getHealth();
 
             // FOR DEBUGGING, show what enemies got hit
             Debug.Log("We hit " + enemy.name);
 
             // Apply the damage to the enemy
-            enemy.GetComponent<CommonEnemy>().health = enemyHP - damageDealt;
+            enemy.GetComponent<CommonEnemy>().setHealth(enemyHP - damageDealt);
 
             // FOR DEBUGGING, show the enemy health
-            Debug.Log(enemy.name + "'s Health: " + enemy.GetComponent<CommonEnemy>().health);
+            Debug.Log(enemy.name + "'s Health: " + enemy.GetComponent<CommonEnemy>().getHealth());
         }
     }
 }

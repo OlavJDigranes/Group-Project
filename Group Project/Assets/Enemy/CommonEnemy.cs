@@ -22,11 +22,18 @@ using UnityEngine;
 /// </summary>
 public class CommonEnemy : MonoBehaviour
 {
-    // Customizable monster health, movement speed multiplier and contact damage values.
+    // Monster level, used to scale the monster's damage and health.
     [SerializeField]
-    public int health;
-    public float moveSpeed;
-    public int contactDamage;
+    private int monsterLevel;
+
+    // Monster drops
+    private int expOnDeath;
+    private int goldOnDeath;
+
+    // Generic monster stats: damage health and movement speed.
+    private int contactDamage;
+    private int health;
+    private int moveSpeed;
 
     // Bool that determines what way the monster is facing, managed by the monster.
     private bool facingRight = false;
@@ -41,6 +48,7 @@ public class CommonEnemy : MonoBehaviour
     // Rigidbody component
     private Rigidbody2D rb;
 
+
     /// <summary>
     /// Runs first and once on scene start.
     /// </summary>
@@ -53,6 +61,16 @@ public class CommonEnemy : MonoBehaviour
 
         // Get rigidbody component
         rb = GetComponent<Rigidbody2D>();
+
+        // Setup monster movement speed and drops.
+        // Monster level might be determined later based on current level/player level? Hardcoded stats is also an option depending on game length.
+        contactDamage = monsterLevel * 5;
+        health = monsterLevel * 10;
+
+        expOnDeath = monsterLevel * 50;
+        goldOnDeath = monsterLevel * 10;
+
+        moveSpeed = 5;
     }
 
     /// <summary>
@@ -102,52 +120,13 @@ public class CommonEnemy : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// Called automatically when the enemy registers a collision with another object with a rigidbody2D component.
-    /// <br></br> Because of how an enemy-player collision is detected, the player MUST use the "Player" tag.
-    /// </summary>
-    /// <param name="other"> The Collision2D object, which can be used to retrieve the other gameObject that collided with the enemy.</param>
-    void OnCollisionEnter2D(Collision2D other)
+    public int getHealth()
     {
-        // Handle collision with player's primary attack
-        if (other.gameObject.tag == "Primary_Attack")
-        {
-            // Decrease health by it's damage value, 4 is a placeholder value.
-            //health -= 4;
-            if (health <= 0)
-            {
-                // todo: Death effect (fade away, unique dying animation, fall into ground..?)
-                // Die if health is 0 or less.
-                Destroy(transform.gameObject);
-                // give player exp, increment global kill count, etc etc.
-            }
-            
-            // Enemy survived, but throw him back to give the attack more visual power.
-            // Throwing the enemy back requires finding the normal between the player/player attack and the enemy.
-            else
-            {
-                // Get collision normal to find force direction
-                Vector2 collisionNormal = (transform.position - other.transform.position).normalized;
-                // Add some height to the force to give it more impact.
-                collisionNormal.y = 0.5f;
+        return health;
+    }
 
-                // Add force, the collision normal multiplied by 5.
-                rb.AddForce(4 * collisionNormal, ForceMode2D.Impulse);
-
-                // Handle force in relation to monster movement: If the monster is pushed in the opposite direction of it's
-                // current movement direction, adapt to this hit and reverse movement direction.
-                if (collisionNormal.x > 0 && !facingRight)
-                {
-                    facingRight = true;
-                    boundBox.x *= -1.0f;
-
-                }
-                else if (collisionNormal.x < 0 && facingRight)
-                {
-                    facingRight = false;
-                    boundBox.x *= -1.0f;
-                }
-            }
-        }
+    public void setHealth(int newHealth)
+    {
+        health = newHealth;
     }
 }

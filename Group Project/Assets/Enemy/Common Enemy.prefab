@@ -144,6 +144,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d64fdc5a5b15b84f9d81ea87b2d40be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
-  moveSpeed: 5
-  contactDamage: 3
+  monsterLevel: 1
